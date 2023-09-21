@@ -33,7 +33,7 @@
                     Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> (<span class="text-blue-500">{{ (Engine.leveling() - cps).toLocaleString() }}</span> left) | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
                 </div>
                 <div>
-                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | v0.1
+                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | Application version v0.1, build 22
                 </div>
             </div>
         </footer>
