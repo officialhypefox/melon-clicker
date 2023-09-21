@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap");
+
+.animate-slow {
+    animation-duration: 4s;
+}
+
+.animate-medium {
+    animation-duration: 2s;
+}
+
+.animate-fast {
+    animation-duration: 1s;
+}
+
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
