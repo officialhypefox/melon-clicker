@@ -7,7 +7,7 @@
   </UContainer>
 </template>
 <script setup lang="ts">
-    const description = "Just a fun little game I scripted in TypeScript and Vue.";
+    const description = "A Cookie Clicker inspired browser game I developed with Nuxt and scripted in TypeScript and Vue.";
     useServerSeoMeta({
         title: "Exotical Cookie Clicker 🍪",
         author: "ItzExotical",
