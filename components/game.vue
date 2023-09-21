@@ -156,7 +156,7 @@
                     title: "Level up!",
                     description: `Good job! You have reached level ${level.value.toLocaleString()}.`,
                     color: "green",
-                    icon: "i-mdi-check",
+                    icon: "i-mdi-arrow-up-thick",
                     timeout: 5 * 1000
                 });
             };
