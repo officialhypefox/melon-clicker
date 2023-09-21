@@ -30,7 +30,7 @@
         <footer>
             <div class="grid">
                 <div>
-                    Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ (total - cookies).toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
+                    Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
                 </div>
                 <div>
                     &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved.
@@ -56,6 +56,7 @@
     const cookies = ref(0);
     const level = ref(1);
     const total = ref(0);
+    const spent = ref(0);
     const cps = ref(0);
     class Engine {
         static price(base: Number, owned: Number) {
@@ -108,10 +109,11 @@
                         let price = Engine.price(cost.base, building.owned);
                         if (cookies.value >= price) {
                             cookies.value -= price;
+                            spent.value += price;
                             building.owned++;
                             toast.add({
                                 title: "Transaction successful!",
-                                description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price.toLocalString()} cookies were deducted from your balance, and you have ${cookies.value.toLocalString()} cookies remaining.`,
+                                description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price} cookies were deducted from your balance, and you have ${cookies.value.toLocaleString()} cookies remaining.`,
                                 color: "green",
                                 icon: "i-mdi-check",
                                 timeout: 5 * 1000
