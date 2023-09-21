@@ -6,7 +6,7 @@
             <UIcon name="i-mdi-warning"/>
         </span>
         <span class="text-4xl">Cookies: <span class="text-blue-500">{{ cookies.toLocaleString() }}</span> (<span class="text-blue-500">{{ cps.toLocaleString() }}</span>/sec)</span>
-        <button @click="cookies++; clicked++;">
+        <button @click="cookies++; clicked++">
             <img draggable="false" src="/img/cookie.png" class="w-64 h-64" />
         </button>
         <span class="text-4xl">Upgrade shop</span>
@@ -14,7 +14,7 @@
             <div v-for="(category, index) in data.buildings.categories" :key="index">
                 <span class="text-indigo-200 text-2xl">{{ category.name }} (<span class="text-blue-500">{{ category.members.length }}</span>)</span>
                 <div class="flex flex-wrap">
-                    <div v-for="(building, index) in category.members" class="mr-4 mb-4">
+                    <div v-for="(building, index) in category.members" :key="index" class="mr-4 mb-4">
                         <div class="grid mb-2">
                             <span class="text-indigo-400 text-2xl mt-4">{{ building.name }} (<span class="text-blue-500">{{ building.owned }}</span>/<span class="text-blue-500">{{ building.limit }}</span> owned)</span>
                             <span class="text-gray-400 max-w-xs break-words">{{ building.description }}</span>
@@ -48,8 +48,7 @@
         "tick": {
             "interval": 1
         }
-    }
-    const leveling = ref({});
+    };
     const tracking = ref({});
     const toast = useToast();
     const clicked = ref(0);
@@ -113,7 +112,7 @@
                             building.owned++;
                             toast.add({
                                 title: "Transaction successful!",
-                                description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price} cookies were deducted from your balance, and you have ${cookies.value.toLocaleString()} cookies remaining.`,
+                                description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price.toLocaleString()} cookies were deducted from your balance, and you have ${cookies.value.toLocaleString()} cookies remaining.`,
                                 color: "green",
                                 icon: "i-mdi-check",
                                 timeout: 5 * 1000

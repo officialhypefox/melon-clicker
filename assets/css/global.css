@@ -1,23 +1,21 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap");
 
-.animate-slow {
-    animation-duration: 4s;
+.cookie-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.animate-medium {
-    animation-duration: 2s;
+.cookie {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
 }
 
-.animate-fast {
-    animation-duration: 1s;
+.click-enter-active, .click-leave-active {
+    transition: transform .3s;
 }
 
-.v-enter-active,
-.v-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-    opacity: 0;
+.click-enter, .click-leave-to {
+    transform: scale(1.2);
 }
