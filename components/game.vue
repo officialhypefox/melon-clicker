@@ -5,11 +5,11 @@
             Closing this page will cause all progress to be lost!
             <UIcon name="i-mdi-warning"/>
         </span>
-        <span class="text-4xl">Cookies: <span class="text-blue-500">{{ cookies.toLocaleString() }}</span> (<span class="text-blue-500">{{ cps.toLocaleString() }}</span>/sec)</span>
+        <span class="text-4xl text-gray-100">Cookies: <span class="text-blue-500">{{ cookies.toLocaleString() }}</span> (<span class="text-blue-500">{{ cps.toLocaleString() }}</span>/sec)</span>
         <button @click="cookies++; clicked++">
             <img draggable="false" src="/img/cookie.png" class="w-64 h-64" />
         </button>
-        <span class="text-4xl">Upgrade shop</span>
+        <span class="text-4xl text-gray-200">Upgrade shop</span>
         <div class="grid">
             <div v-for="(category, index) in data.buildings.categories" :key="index">
                 <span class="text-indigo-200 text-2xl">{{ category.name }} (<span class="text-blue-500">{{ category.members.length }}</span>)</span>
@@ -28,7 +28,7 @@
             </div>
         </div>
         <footer>
-            <div class="grid">
+            <div class="grid text-white">
                 <div>
                     Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
                 </div>
@@ -201,7 +201,7 @@
                         "name": "Cookie Bakery",
                         "description": "An old run-down bakery that produces 2 cookies per second.",
                         "owned": 0,
-                        "limit": 100,
+                        "limit": 500,
                         "cost": [{
                             "name": "cookies",
                             "tracker": false,
@@ -220,7 +220,7 @@
                         "name": "Cookie Factory",
                         "description": "A modern cookie factory that can produce 10 cookies per second.",
                         "owned": 0,
-                        "limit": 100,
+                        "limit": 500,
                         "cost": [{
                             "name": "cookies",
                             "tracker": false,
@@ -239,7 +239,7 @@
                         "name": "Cookie Mine",
                         "description": "A brand new cookie mine that is capable of producing 50 cookies per second.",
                         "owned": 0,
-                        "limit": 100,
+                        "limit": 500,
                         "cost": [{
                             "name": "cookies",
                             "tracker": false,
@@ -258,7 +258,7 @@
                         "name": "Cookie Rain",
                         "description": "Cookies start raining all over the town! Produces 100 cookies per second.",
                         "owned": 0,
-                        "limit": 100,
+                        "limit": 500,
                         "cost": [{
                             "name": "cookies",
                             "tracker": false,
