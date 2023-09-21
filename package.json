@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.1.54",
-    "@nuxt/image": "^1.0.0-rc.2",
     "@nuxt/ui": "^2.8.1"
   }
 }

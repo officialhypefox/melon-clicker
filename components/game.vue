@@ -7,7 +7,7 @@
         </span>
         <span class="text-4xl">Cookies: <span class="text-blue-500">{{ cookies.toLocaleString() }}</span> (<span class="text-blue-500">{{ cps.toLocaleString() }}</span>/sec)</span>
         <button @click="cookies++; clicked++;">
-            <NuxtImg src="/img/cookie.png" class="w-64 h-64" />
+            <img src="/img/cookie.png" class="w-64 h-64" />
         </button>
         <span class="text-4xl">Upgrade shop</span>
         <div class="grid">

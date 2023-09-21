@@ -4,7 +4,6 @@ export default defineNuxtConfig({
     enabled: true
   },
   modules: [
-    "@nuxt/image",
     "@nuxt/ui"
   ],
   css: [
