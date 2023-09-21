@@ -112,7 +112,7 @@
                             building.owned++;
                             toast.add({
                                 title: "Transaction successful!",
-                                description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price.toLocaleString()} cookies were deducted from your balance, and you have ${cookies.value.toLocaleString()} cookies remaining.`,
+                                description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price.toLocaleString()} cookies was deducted from your balance, and you have ${cookies.value.toLocaleString()} cookies remaining.`,
                                 color: "green",
                                 icon: "i-mdi-check",
                                 timeout: 5 * 1000
