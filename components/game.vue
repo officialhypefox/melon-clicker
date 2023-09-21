@@ -122,7 +122,7 @@
                         } else {
                             toast.add({
                                 title: "Transaction check failed.",
-                                description: `You do not have enough cookies to purchase this item (need ${price.toLocaleString()}, have ${cookies.value.toLocaleString()}).`,
+                                description: `You do not have enough cookies to purchase this item (need ${price.toLocaleString()}, have ${cookies.value.toLocaleString()}, missing ${(price - cookies.value).toLocaleString()}).`,
                                 color: "red",
                                 icon: "i-mdi-exclamation-thick",
                                 timeout: 5 * 1000
