@@ -34,7 +34,7 @@
                     Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> (<span class="text-blue-500">{{ (Engine.leveling() - cps).toLocaleString() }}</span> left) | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span>/<span class="text-blue-500">{{ Engine.buildings(true, true).toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
                 </div>
                 <div>
-                    Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> ticks)
+                    Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> {{ lang }})
                 </div>
                 <div>
                     &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.1 | Engine v0.2 | Build 23
@@ -58,10 +58,11 @@
     const toast = useToast();
     const clicked = ref(0);
     const cookies = ref(0);
+    const ticks = ref(0);
+    const lang = ref("");
     const level = ref(1);
     const total = ref(0);
     const spent = ref(0);
-    const ticks = ref(0);
     const cps = ref(0);
     class Engine {
         static price(base: Number, owned: Number) {
@@ -167,6 +168,7 @@
         };
         static tick() {
             ticks.value++;
+            lang.value = ticks.value === 1 ? "tick" : "ticks";
             cps.value = 0;
             for (const category of data.buildings.categories) {
                 for (const building of category.members) {
@@ -209,6 +211,7 @@
             runtime.value = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
         };
         static init() {
+            lang.value = ticks.value === 1 ? "tick" : "ticks";
             for (const category of data.buildings.categories) {
                 for (const building of category.members) {
                     for (const object of building.cost) {

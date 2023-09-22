@@ -16,6 +16,9 @@ export default defineAppConfig({
                 }
             }
         },
+        notifications: {
+            position: "top-0 right-0"
+        },
         selectMenu: {
             background: "bg-dark-secondary",
             ring: "ring-1 ring-dark-tertiary",
