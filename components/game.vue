@@ -191,7 +191,7 @@
                 toast.add({
                     title: "Level up!",
                     description: `Good job! You have reached level ${level.value.toLocaleString()}.`,
-                    color: "green",
+                    color: "blue",
                     icon: "i-mdi-arrow-up-thick",
                     timeout: 5 * 1000
                 });
