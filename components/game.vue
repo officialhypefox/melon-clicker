@@ -7,16 +7,17 @@
         </span>
         <span class="text-4xl text-gray-100">Cookies: <span class="text-blue-500">{{ cookies.toLocaleString() }}</span> (<span class="text-blue-500">{{ cps.toLocaleString() }}</span>/sec)</span>
         <button @click="cookies++; clicked++">
-            <img draggable="false" src="/img/cookie.png" class="w-64 h-64" />
+            <img draggable=false src="/img/cookie.png" class="w-64 h-64" />
         </button>
-        <span class="text-4xl text-gray-200">Upgrade shop</span>
+        <span class="text-4xl text-gray-200">Shop for upgrades</span>
         <div class="grid">
             <div v-for="(category, index) in data.buildings.categories" :key="index">
                 <span class="text-indigo-200 text-2xl">{{ category.name }} (<span class="text-blue-500">{{ category.members.length }}</span>)</span>
                 <div class="flex flex-wrap">
                     <div v-for="(building, index) in category.members" :key="index" class="mr-4 mb-4">
                         <div class="grid mb-2">
-                            <span class="text-indigo-400 text-2xl mt-4">{{ building.name }} (<span class="text-blue-500">{{ building.owned }}</span>/<span class="text-blue-500">{{ building.limit }}</span> owned)</span>
+                            <span class="text-indigo-400 text-2xl mt-4">{{ building.name }} (<span class="text-blue-500">{{ building.owned }}</span>/<span class="text-blue-500">{{ building.limit }}</span> owned) </span>
+                            <span class="text-gray-500"><span class="text-blue-500">{{ Math.round((building.owned / building.limit) * 100) }}% </span>completed</span>
                             <span class="text-gray-400 max-w-xs break-words">{{ building.description }}</span>
                             <span class="text-green-600">Production: <span v-for="(output, index) in building.output" :key="index" class="text-gray-400">{{ Engine.title(output.name) }}: <span class="text-blue-500">{{ output.value.toLocaleString() }}</span></span></span>
                             <span class="text-red-400">Conditions: <span v-for="(condition, index) in building.conditions" :key="index" class="text-gray-400">{{ Engine.title(condition.name) }}: <span class="text-blue-500">{{ condition.value.toLocaleString() }}</span></span></span>
@@ -30,10 +31,13 @@
         <footer>
             <div class="grid text-white">
                 <div>
-                    Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> (<span class="text-blue-500">{{ (Engine.leveling() - cps).toLocaleString() }}</span> left) | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
+                    Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | CPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> (<span class="text-blue-500">{{ (Engine.leveling() - cps).toLocaleString() }}</span> left) | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span>/<span class="text-blue-500">{{ Engine.buildings(true, true).toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
                 </div>
                 <div>
-                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | Application version v0.1, build 22
+                    Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> ticks)
+                </div>
+                <div>
+                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.1 | Engine v0.2 | Build 23
                 </div>
             </div>
         </footer>
@@ -49,6 +53,7 @@
             "interval": 1
         }
     };
+    const runtime = ref("00:00:00");
     const tracking = ref({});
     const toast = useToast();
     const clicked = ref(0);
@@ -56,16 +61,44 @@
     const level = ref(1);
     const total = ref(0);
     const spent = ref(0);
+    const ticks = ref(0);
     const cps = ref(0);
     class Engine {
         static price(base: Number, owned: Number) {
             return 0.1 * base * owned + base;
         };
-        static buildings() {
+        static progress(percentage: boolean = true) {
+            let result = 0;
+            if (percentage) {
+                return ((Engine.buildings() / Engine.buildings(true, true)) * 100).toFixed(2);
+            } else {
+                for (const category of data.buildings.categories) {
+                    for (const building of category.members) {
+                        if (building.owned >= building.limit) {
+                            result++;
+                        };
+                    };
+                };
+                return result;
+            };
+        };
+        static buildings(total = true, all = false) {
             let count = 0;
-            for (const category of data.buildings.categories) {
-                for (const building of category.members) {
-                    count += building.owned;
+            if (total) {
+                for (const category of data.buildings.categories) {
+                    for (const building of category.members) {
+                        if (all) {
+                            count += building.limit;
+                        } else {
+                            count += building.owned;
+                        };
+                    };
+                };
+            } else {
+                for (const category of data.buildings.categories) {
+                    for (const building of category.members) {
+                        count++;
+                    };
                 };
             };
             return count;
@@ -133,6 +166,7 @@
             };
         };
         static tick() {
+            ticks.value++;
             cps.value = 0;
             for (const category of data.buildings.categories) {
                 for (const building of category.members) {
@@ -160,6 +194,19 @@
                     timeout: 5 * 1000
                 });
             };
+            let seconds = parseInt(runtime.value.split(":")[2]);
+            let minutes = parseInt(runtime.value.split(":")[1]);
+            let hours = parseInt(runtime.value.split(":")[0]);
+            seconds++;
+            if (seconds >= 60) {
+                seconds = 0;
+                minutes++;
+            };
+            if (minutes >= 60) {
+                minutes = 0;
+                hours++;
+            };
+            runtime.value = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
         };
         static init() {
             for (const category of data.buildings.categories) {
