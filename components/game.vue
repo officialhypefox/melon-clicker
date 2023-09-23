@@ -17,7 +17,7 @@
                     <div v-for="(building, index) in category.members" :key="index" class="mr-4 mb-4">
                         <div class="grid mb-2">
                             <span class="text-indigo-400 text-2xl mt-4">{{ building.name }} (<span class="text-blue-500">{{ building.owned }}</span>/<span class="text-blue-500">{{ building.limit }}</span> owned) </span>
-                            <span class="text-gray-500"><span class="text-blue-500">{{ Math.round((building.owned / building.limit) * 100) }}% </span>completed</span>
+                            <span class="text-gray-500"><span class="text-blue-500">{{ Math.floor((building.owned / building.limit) * 100) }}% </span>completed</span>
                             <span class="text-gray-400 max-w-xs break-words">{{ building.description }}</span>
                             <span class="text-green-600">Production: <span v-for="(output, index) in building.output" :key="index" class="text-gray-400">{{ Engine.title(output.name) }}: <span class="text-blue-500">{{ output.value.toLocaleString() }}</span></span></span>
                             <span class="text-red-400">Conditions: <span v-for="(condition, index) in building.conditions" :key="index" class="text-gray-400">{{ Engine.title(condition.name) }}: <span class="text-blue-500">{{ condition.value.toLocaleString() }}</span></span></span>
@@ -37,7 +37,7 @@
                     Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> {{ lang }})
                 </div>
                 <div>
-                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.1 | Engine v0.2 | Build 23
+                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.1 | Engine v0.2 | Build 24
                 </div>
             </div>
         </footer>
