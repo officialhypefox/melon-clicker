@@ -1,5 +1,8 @@
-<<<<<<< HEAD
-# Nuxt 3 Minimal Starter
+# Exotical's Cookie Clicker
+
+Just a fun little game I scripted in TypeScript and Vue.
+
+## Powered by Nuxt
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
@@ -72,7 +75,6 @@ yarn preview
 # bun
 bun run preview
 ```
-
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 =======
 # cookie-clicker
