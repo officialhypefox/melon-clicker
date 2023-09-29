@@ -218,7 +218,7 @@
             for (const category of data.buildings.categories) {
                 for (const building of category.members) {
                     for (const object of building.cost) {
-                        tracking.value[building.name + object.name] = object.base;
+                        tracking.value[building.name + object.name] = object.base * settings.general.inflationRate;
                     };
                 };
             };
