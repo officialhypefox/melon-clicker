@@ -46,6 +46,9 @@
 <script setup lang="ts">
     const year = new Date().getFullYear();
     const settings = {
+        "general": {
+            "inflationRate": 10
+        },
         "leveling": {
             "base": 10
         },
@@ -66,7 +69,7 @@
     const cps = ref(0);
     class Engine {
         static price(base: Number, owned: Number) {
-            return 0.1 * base * owned + base;
+            return (0.1 * base * owned + base) * settings.general.inflationRate;
         };
         static progress(percentage: boolean = true) {
             let result = 0;
@@ -176,7 +179,7 @@
                         for (const output of building.output) {
                             switch (output.name) {
                                 case "cookies":
-                                    const computed = building.owned * output.value;
+                                    const computed = (building.owned * output.value) * settings.general.inflationRate;
                                     cookies.value += computed;
                                     total.value += computed;
                                     cps.value += computed;
