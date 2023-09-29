@@ -76,7 +76,3 @@ yarn preview
 bun run preview
 ```
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-=======
-# cookie-clicker
-Just a fun little game I scripted in TypeScript and Vue.
->>>>>>> 5fb127f (Initial commit)
