@@ -53,19 +53,11 @@
     </div>
 </template>
 <script setup lang="ts">
+    const app = useNuxtApp();
+    const settings = app.$settings as any;
     const year = new Date().getFullYear();
-    const settings = {
-        general: {
-            inflationRate: 10
-        },
-        leveling: {
-            base: 10
-        },
-        tick: {
-            interval: 1
-        }
-    };
     const runtime = ref("00:00:00");
+    const data = app.$data as any;
     const banned = ref(false);
     const tracking = ref({});
     const toast = useToast();
@@ -243,109 +235,6 @@
         static title(input: string) {
             return input.charAt(0).toUpperCase() + input.slice(1);
         };
-    };
-    const data = {
-        "buildings": {
-            "categories": [{
-                "name": "Buildings",
-                "members": [{
-                        "name": "Melon Machine",
-                        "description": `A simple and weak melon machine that harvests ${1 * settings.general.inflationRate} melons per second.`,
-                        "owned": 0,
-                        "limit": 25,
-                        "cost": [{
-                            "name": "melons",
-                            "tracker": false,
-                            "base": 10
-                        }],
-                        "conditions": [{
-                            "name": "level",
-                            "value": 1
-                        }],
-                        "output": [{
-                            "name": "melons",
-                            "value": 1
-                        }]
-                    },
-                    {
-                        "name": "Melon Farm",
-                        "description": `An old run-down melon farm that produces ${2 * settings.general.inflationRate} melons per second.`,
-                        "owned": 0,
-                        "limit": 500,
-                        "cost": [{
-                            "name": "melons",
-                            "tracker": false,
-                            "base": 100
-                        }],
-                        "conditions": [{
-                            "name": "level",
-                            "value": 2
-                        }],
-                        "output": [{
-                            "name": "melons",
-                            "value": 2
-                        }]
-                    },
-                    {
-                        "name": "Melon Factory",
-                        "description": `A modern melon factory that can produce ${10 * settings.general.inflationRate} melons per second.`,
-                        "owned": 0,
-                        "limit": 500,
-                        "cost": [{
-                            "name": "melons",
-                            "tracker": false,
-                            "base": 1000
-                        }],
-                        "conditions": [{
-                            "name": "level",
-                            "value": 3
-                        }],
-                        "output": [{
-                            "name": "melons",
-                            "value": 10
-                        }]
-                    },
-                    {
-                        "name": "Melon Mine",
-                        "description": `A brand new melon mine that is capable of producing ${50 * settings.general.inflationRate} melons per second.`,
-                        "owned": 0,
-                        "limit": 500,
-                        "cost": [{
-                            "name": "melons",
-                            "tracker": false,
-                            "base": 5000
-                        }],
-                        "conditions": [{
-                            "name": "level",
-                            "value": 4
-                        }],
-                        "output": [{
-                            "name": "melons",
-                            "value": 50
-                        }]
-                    },
-                    {
-                        "name": "Melon Rain",
-                        "description": `Melons start raining all over the town! Produces ${100 * settings.general.inflationRate} melons per second.`,
-                        "owned": 0,
-                        "limit": 500,
-                        "cost": [{
-                            "name": "melons",
-                            "tracker": false,
-                            "base": 10000
-                        }],
-                        "conditions": [{
-                            "name": "level",
-                            "value": 5
-                        }],
-                        "output": [{
-                            "name": "melons",
-                            "value": 100
-                        }]
-                    }
-                ]
-            }]
-        }
     };
     Engine.init();
     setInterval(Engine.tick, settings.tick.interval * 1000);
