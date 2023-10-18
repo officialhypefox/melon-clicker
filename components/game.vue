@@ -174,7 +174,7 @@
             };
         };
         static tick() {
-            if((newcps.value - lastcps.value) > 12) {
+            if((newcps.value - lastcps.value) > 14) {
                 // Anti-cheat detected cheating
                 banned.value = true;
             };

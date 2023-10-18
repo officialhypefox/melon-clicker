@@ -19,7 +19,7 @@
         twitterCard: "summary_large_image",
         themeColor: [
             {
-                content: "#d39c4a",
+                content: "#e73552",
                 media: "(prefers-color-scheme: dark)"
             }
         ]
