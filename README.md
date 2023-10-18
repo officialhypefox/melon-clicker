@@ -1,4 +1,4 @@
-# Exotical's Cookie Clicker
+# Exotical's Melon Clicker
 
 Just a fun little game I scripted in TypeScript and Vue.
 
