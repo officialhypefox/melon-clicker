@@ -6,7 +6,7 @@
             <UIcon name="i-mdi-warning"/>
         </span>
         <span class="text-4xl text-gray-100">Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)</span>
-        <button @click="melons++; clicked++; newcps++">
+        <button tabindex="-1" @click="melons++; clicked++; newcps++">
             <img draggable=false src="/img/melon.png" class="w-64 h-64" />
         </button>
         <span class="text-4xl text-gray-200">Shop for upgrades</span>
@@ -55,14 +55,14 @@
 <script setup lang="ts">
     const year = new Date().getFullYear();
     const settings = {
-        "general": {
-            "inflationRate": 10
+        general: {
+            inflationRate: 10
         },
-        "leveling": {
-            "base": 10
+        leveling: {
+            base: 10
         },
-        "tick": {
-            "interval": 1
+        tick: {
+            interval: 1
         }
     };
     const runtime = ref("00:00:00");
@@ -182,7 +182,7 @@
             };
         };
         static tick() {
-            if((newcps.value - lastcps.value) > 18) {
+            if((newcps.value - lastcps.value) > 12) {
                 // Anti-cheat detected cheating
                 banned.value = true;
             };
