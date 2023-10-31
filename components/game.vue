@@ -37,7 +37,7 @@
                     Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> {{ lang }})
                 </div>
                 <div>
-                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.1 | Engine v0.2 | Build 36
+                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.2 | Engine v0.3 | Build 37
                 </div>
             </div>
         </footer>
@@ -59,7 +59,6 @@
     const runtime = ref("00:00:00");
     const data = app.$data as any;
     const banned = ref(false);
-    const tracking = ref({});
     const toast = useToast();
     const lastcps  = ref(0);
     const newcps  = ref(0);
@@ -71,8 +70,38 @@
     const total = ref(0);
     const spent = ref(0);
     const mps = ref(0);
+    interface Tracking {
+        [key: string]: number;
+    };
+    interface Cost {
+        name: string;
+        tracker: boolean;
+        base: number;
+    };
+    interface Condition {
+        name: string;
+        value: number;
+    };
+    interface Output {
+        name: string;
+        value: number;
+    };
+    interface Building {
+        name: string;
+        description: string;
+        owned: number;
+        limit: number;
+        cost: Array<Cost>;
+        conditions: Array<Condition>;
+        output: Array<Output>;
+    };
+    interface Category {
+        name: string;
+        members: Array<Building>;
+    };
+    const tracking = ref({} as Tracking);
     class Engine {
-        static price(base: Number, owned: Number) {
+        static price(base: number, owned: number) {
             return (0.1 * base * owned + base) * settings.general.inflationRate;
         };
         static progress(percentage: boolean = true) {
@@ -115,8 +144,8 @@
             return settings.leveling.base * (level.value ** 2);
         };
         static purchase(categoryName: string, buildingName: string) {
-            const category = data.buildings.categories.find((cat) => cat.name === categoryName);
-            const building = category.members.find((bld) => bld.name === buildingName);
+            const category = data.buildings.categories.find((category: Category) => category.name === categoryName);
+            const building = category.members.find((building: Building) => building.name === buildingName);
             if (building.owned >= building.limit) {
                 toast.add({
                     title: "Limit check failed.",

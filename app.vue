@@ -9,7 +9,7 @@
 <script setup lang="ts">
     const description = "A small little browser game I developed with Nuxt and scripted in TypeScript and Vue.";
     useSeoMeta({
-        title: "Exotical Melon Clicker 🍉",
+        title: "Melon Clicker",
         author: "ItzExotical",
         ogLocale: "en_GB",
         ogTitle: "Exotical's Melon Clicker game 🍉",
