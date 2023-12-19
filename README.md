@@ -1,6 +1,6 @@
-# Exotical's Melon Clicker
+# Melon Clicker
 
-Just a fun little game I scripted in TypeScript and Vue.
+The official game for the cloud computing provider Melonslab.
 
 ## Powered by Nuxt
 
