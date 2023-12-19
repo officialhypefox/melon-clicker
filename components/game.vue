@@ -1,20 +1,22 @@
 <template>
     <div v-if="!banned" class="bg-dark-primary h-screen items-center justify-center text-center flex flex-col gap-y-10">
-        <UModal v-model="resetopen">
-            <div class="flex flex-col items-center gap-y-4 py-8 text-center">
-                <span class="text-4xl text-gray-100">Reset save data?</span>
-                <span class="text-gray-400">All game progress will be wiped and the game will reload.<br>This can not be undone.</span>
-                <div class="flex gap-x-4">
-                    <UButton @click="resetopen = false" label="Cancel" color="blue" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-x" />
-                    <UButton @click="Engine.clear()" label="Reset" color="red" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-trash" />
-                </div>
-            </div>
-        </UModal>
-        <span class="text-4xl text-gray-100">Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)</span>
-        <button>
-            <img draggable=false @click="Engine.handleClick" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer" />
-        </button>
-        <span class="text-4xl text-gray-200">Shop for upgrades</span>
+      <UModal v-model="resetopen">
+        <div class="flex flex-col items-center gap-y-4 py-8 text-center">
+          <span class="text-4xl text-gray-100">Reset save data?</span>
+          <span class="text-gray-400">All game progress will be wiped and the game will reload.<br>This can not be undone.</span>
+          <div class="flex gap-x-4">
+            <UButton @click="resetopen = false" label="Cancel" color="blue" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-x" />
+            <UButton @click="Engine.clear()" label="Reset" color="red" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-trash" />
+          </div>
+        </div>
+      </UModal>
+      <div class="text-4xl text-gray-100">
+        Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)
+      </div>
+      <button @click="Engine.handleClick" class="focus:outline-none">
+        <img draggable="false" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer select-none" />
+      </button>
+      <span class="text-4xl text-gray-200">Shop for upgrades</span>
         <div class="grid">
             <div v-for="(category, index) in data.buildings.categories" :key="index">
                 <span class="text-indigo-200 text-2xl">{{ category.name }} (<span class="text-blue-500">{{ category.members.length }}</span>)</span>
@@ -54,7 +56,7 @@
         <div class="flex items-center justify-center h-screen">
             <div class="flex flex-col items-center gap-y-2">
                 <UIcon name="i-lucide-alert-triangle" class="text-red-500 text-[10rem]" />
-                <a class="text-red-500 font-bold text-4xl">{{ "Cheating detected!".toUpperCase() }}</a>
+                <a class="text-red-500 text-4xl font-bold uppercase">Cheating detected!</a>
                 <a class="text-red-500 text-xl">Looks like you've been caught red-handed! Remember, in the game of life, cheats never prosper. Better luck next time!</a>
                 <a class="text-red-500 text-xl font-extrabold">Save data has been destroyed.</a>
             </div>
