@@ -1,6 +1,6 @@
 const settings = {
     general: {
-        inflationRate: 5
+        inflationRate: 10
     },
     leveling: {
         base: 10
@@ -17,11 +17,11 @@ const data = {
                     name: "Melon Machine",
                     description: `A simple and weak melon machine that harvests ${1 * settings.general.inflationRate} melons per second.`,
                     owned: 0,
-                    limit: 25,
+                    limit: 100,
                     cost: [{
                         name: "melons",
                         tracker: false,
-                        base: 10
+                        base: 5
                     }],
                     conditions: [{
                         name: "level",
@@ -44,7 +44,7 @@ const data = {
                     }],
                     conditions: [{
                         name: "level",
-                        value: 2
+                        value: 5
                     }],
                     output: [{
                         name: "melons",
@@ -63,7 +63,7 @@ const data = {
                     }],
                     conditions: [{
                         name: "level",
-                        value: 3
+                        value: 10
                     }],
                     output: [{
                         name: "melons",
@@ -82,7 +82,7 @@ const data = {
                     }],
                     conditions: [{
                         name: "level",
-                        value: 4
+                        value: 15
                     }],
                     output: [{
                         name: "melons",
@@ -101,7 +101,7 @@ const data = {
                     }],
                     conditions: [{
                         name: "level",
-                        value: 5
+                        value: 20
                     }],
                     output: [{
                         name: "melons",
