@@ -332,7 +332,7 @@
                         sameDelayCount++;
                     } else {
                         sameDelayCount = 0;
-                    }
+                    };
                 };
                 if (sameDelayCount >= 10) {
                     toast.add({
