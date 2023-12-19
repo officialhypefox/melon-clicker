@@ -1,10 +1,5 @@
 <template>
     <div v-if="!banned" class="bg-dark-primary h-screen items-center justify-center text-center flex flex-col gap-y-10">
-        <span class="text-red-600 text-xl flex gap-x-2 items-center">
-            <UIcon name="i-mdi-warning"/>
-            Closing this page will cause all progress to be lost!
-            <UIcon name="i-mdi-warning"/>
-        </span>
         <span class="text-4xl text-gray-100">Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)</span>
         <img draggable=false @click="Engine.handleClick" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer" />
         <span class="text-4xl text-gray-200">Shop for upgrades</span>
