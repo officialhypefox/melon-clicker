@@ -64,7 +64,7 @@
     </div>
 </template>
 <script setup lang="ts">
-    import { getData, setData, clear } from "nuxt-storage/local-storage";
+    import { getData, setData } from "nuxt-storage/local-storage";
     const app = useNuxtApp();
     const verid = ref("536b332a");
     const settings = app.$settings as any;
@@ -308,11 +308,11 @@
             if (!banned.value) {
                 Engine.saveGame();
             } else {
-                clear("game");
+                setData("game", false);
             };
         };
         static clear() {
-            clear("game");
+            setData("game", false);
             location.reload();
         };
         static anticheat() {
