@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.1.147",
-    "@nuxt/ui": "^2.8.1"
+    "@nuxt/ui": "^2.8.1",
+    "nuxt-storage": "^1.2.2"
   }
 }
