@@ -218,6 +218,7 @@
             if (process.client) {
                 localStorage.setItem("game", JSON.stringify({
                     melons: melons.value,
+                    clicks: clicked.value,
                     level: level.value,
                     total: total.value,
                     spent: spent.value,
@@ -280,6 +281,7 @@
                 const game = localStorage.getItem("game");
                 if (game) {
                     const parsed = JSON.parse(game);
+                    clicked.value = parsed.clicks;
                     melons.value = parsed.melons;
                     level.value = parsed.level;
                     total.value = parsed.total;
