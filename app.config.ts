@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/guide/directory-structure/app-config
 export default defineAppConfig({
     ui: {
+        notifications: {
+            position: "top-0 bottom-auto"
+        },
         notification: {
             background: "!bg-dark-secondary",
             ring: "ring-1 !ring-dark-tertiary",
