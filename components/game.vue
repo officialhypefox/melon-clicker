@@ -331,7 +331,7 @@
                         sameDelayCount++;
                     };
                 };
-                if (sameDelayCount >= 10) {
+                if (sameDelayCount >= 5) {
                     toast.add({
                         title: "Cheating detected!",
                         description: "You have been detected using an autoclicker and the game has been terminated.",
