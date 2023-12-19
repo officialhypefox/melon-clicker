@@ -16,7 +16,7 @@
                             <span class="text-red-400">Conditions: <span v-for="(condition, index) in building.conditions" :key="index" class="text-gray-400">{{ Engine.title(condition.name) }}: <span class="text-blue-500">{{ condition.value.toLocaleString() }}</span></span></span>
                             <span class="text-red-500">Cost: <span v-for="(cost, index) in building.cost" :key="index" class="text-gray-400">{{ Engine.title(cost.name) }}: <span class="text-blue-500">{{ tracking[building.name + cost.name].toLocaleString() }}</span></span></span>
                         </div>
-                        <UButton @click="Engine.purchase(category.name, building.name)" label="Buy" color="blue" size="lg" class="w-full justify-center" trailing-icon="i-mdi-shopping-cart" />
+                        <UButton @click="Engine.purchase(category.name, building.name)" label="Buy" color="blue" size="lg" class="w-full justify-center" trailing-icon="i-lucide-shopping-cart" />
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
     <div v-if="banned">
         <div class="flex items-center justify-center h-screen">
             <div class="flex flex-col items-center gap-y-2">
-                <UIcon name="i-mdi-alert" class="text-red-500 text-[10rem]" />
+                <UIcon name="i-lucide-alert-triangle" class="text-red-500 text-[10rem]" />
                 <a class="text-red-500 font-bold text-4xl">{{ "Cheating detected!".toUpperCase() }}</a>
                 <a class="text-red-500 text-xl">Looks like you've been caught red-handed! Remember, in the game of life, cheats never prosper. Better luck next time!</a>
             </div>
@@ -143,7 +143,7 @@
                     title: "Limit check failed.",
                     description: `You have reached the limit (${building.owned}/${building.limit}) of ${building.name}.`,
                     color: "red",
-                    icon: "i-mdi-exclamation-thick",
+                    icon: "i-lucide-alert-circle",
                     timeout: 5 * 1000
                 });
                 return;
@@ -156,7 +156,7 @@
                                 title: "Condition check failed.",
                                 description: `You do not meet the required level to purchase this item (need ${condition.value.toLocaleString()}, have ${level.value.toLocaleString()}).`,
                                 color: "red",
-                                icon: "i-mdi-exclamation-thick",
+                                icon: "i-lucide-alert-circle",
                                 timeout: 5 * 1000
                             });
                             return;
@@ -176,7 +176,7 @@
                                 title: "Transaction successful!",
                                 description: `Purchased ${building.name}. You now have ${building.owned} of them. ${price.toLocaleString()} melons was deducted from your balance, and you have ${melons.value.toLocaleString()} melons remaining.`,
                                 color: "green",
-                                icon: "i-mdi-check",
+                                icon: "i-lucide-check",
                                 timeout: 5 * 1000
                             });
                             price = Engine.price(cost.base, building.owned);
@@ -186,7 +186,7 @@
                                 title: "Transaction check failed.",
                                 description: `You do not have enough melons to purchase this item (need ${price.toLocaleString()}, have ${melons.value.toLocaleString()}, missing ${(price - melons.value).toLocaleString()}).`,
                                 color: "red",
-                                icon: "i-mdi-exclamation-thick",
+                                icon: "i-lucide-alert-circle",
                                 timeout: 5 * 1000
                             });
                         };
@@ -223,7 +223,7 @@
                     title: "Level up!",
                     description: `Good job! You have reached level ${level.value.toLocaleString()}.`,
                     color: "blue",
-                    icon: "i-mdi-arrow-up-thick",
+                    icon: "i-lucide-rocket",
                     timeout: 5 * 1000
                 });
             };
@@ -279,7 +279,7 @@
                         title: "Cheating detected!",
                         description: "You have been detected using an autoclicker and the game has been terminated.",
                         color: "red",
-                        icon: "i-mdi-alert",
+                        icon: "i-lucide-alert-circle",
                         timeout: 5 * 1000
                     });
                     banned.value = true;

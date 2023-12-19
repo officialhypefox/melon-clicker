@@ -622,10 +622,10 @@
   dependencies:
     "@iconify/types" "*"
 
-"@iconify-json/mdi@^1.1.54":
-  version "1.1.63"
-  resolved "https://registry.yarnpkg.com/@iconify-json/mdi/-/mdi-1.1.63.tgz#264f4c7d2eeb0f48793338138ec689182608058c"
-  integrity sha512-b07dRM5LYdwJqd/lm+1+JDNDNSWHvpZ7ujb73oJxx3lmK1J0giDS0BSc4yia0hixNV0Z2q/4GyxAu/A8XqDnbg==
+"@iconify-json/lucide@^1.1.147":
+  version "1.1.147"
+  resolved "https://registry.yarnpkg.com/@iconify-json/lucide/-/lucide-1.1.147.tgz#9ff33189592c1fb15ce10ecc58e054f7d102327b"
+  integrity sha512-5BgeL5aWJKlRdda87Ah/o6nM5NQU1rr0So9S8p3zAAjdFxCyHmeO9Lg3Uh8TdDer1MeJ3xJeDoIg4T81m81DHw==
   dependencies:
     "@iconify/types" "*"
 
