@@ -325,13 +325,16 @@
                 const firstClickTime = clickhistory.value[0];
                 let sameDelayCount = 0;
                 const expectedDelay = clickhistory.value[1] - firstClickTime;
+                const threshold = 20;
                 for (let i = 2; i < clickhistory.value.length; i++) {
                     const currentDelay = clickhistory.value[i] - clickhistory.value[i - 1];
-                    if (currentDelay === expectedDelay) {
+                    if (currentDelay >= expectedDelay - threshold && currentDelay <= expectedDelay + threshold) {
                         sameDelayCount++;
-                    };
+                    } else {
+                        sameDelayCount = 0;
+                    }
                 };
-                if (sameDelayCount >= 5) {
+                if (sameDelayCount >= 10) {
                     toast.add({
                         title: "Cheating detected!",
                         description: "You have been detected using an autoclicker and the game has been terminated.",
