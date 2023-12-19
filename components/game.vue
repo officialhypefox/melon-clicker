@@ -6,7 +6,7 @@
             <UIcon name="i-mdi-warning"/>
         </span>
         <span class="text-4xl text-gray-100">Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)</span>
-        <img draggable=false @click="melons++; clicked++; newcps++" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64" />
+        <img draggable=false @click="Engine.handleClick" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer" />
         <span class="text-4xl text-gray-200">Shop for upgrades</span>
         <div class="grid">
             <div v-for="(category, index) in data.buildings.categories" :key="index">
@@ -54,12 +54,11 @@
     const app = useNuxtApp();
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
+    const clickhistory = ref(Array());
     const runtime = ref("00:00:00");
     const data = app.$data as any;
     const banned = ref(false);
     const toast = useToast();
-    const lastcps  = ref(0);
-    const newcps  = ref(0);
     const clicked = ref(0);
     const melons = ref(0);
     const ticks = ref(0);
@@ -201,11 +200,9 @@
             };
         };
         static tick() {
-            if((newcps.value - lastcps.value) > 14) {
-                // Anti-cheat detected cheating
-                banned.value = true;
+            if (banned.value) {
+                return;
             };
-            lastcps.value = newcps.value;
             ticks.value++;
             lang.value = ticks.value === 1 ? "tick" : "ticks";
             mps.value = 0;
@@ -261,6 +258,38 @@
         };
         static title(input: string) {
             return input.charAt(0).toUpperCase() + input.slice(1);
+        };
+        static handleClick() {
+            clickhistory.value.push(Date.now());
+            if (clickhistory.value.length > 15) {
+                clickhistory.value.shift();
+            };
+            melons.value++;
+            clicked.value++;
+            Engine.anticheat();
+        };
+        static anticheat() {
+            if (clickhistory.value.length >= 3) {
+                const firstClickTime = clickhistory.value[0];
+                let sameDelayCount = 0;
+                const expectedDelay = clickhistory.value[1] - firstClickTime;
+                for (let i = 2; i < clickhistory.value.length; i++) {
+                    const currentDelay = clickhistory.value[i] - clickhistory.value[i - 1];
+                    if (currentDelay === expectedDelay) {
+                        sameDelayCount++;
+                    };
+                };
+                if (sameDelayCount >= 3) {
+                    toast.add({
+                        title: "Cheating detected!",
+                        description: "You have been detected using an autoclicker.",
+                        color: "red",
+                        icon: "i-mdi-alert",
+                        timeout: 5 * 1000
+                    });
+                    banned.value = true;
+                };
+            };
         };
     };
     Engine.init();
