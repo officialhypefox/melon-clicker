@@ -264,7 +264,7 @@
             Engine.anticheat();
         };
         static anticheat() {
-            if (clickhistory.value.length >= 3) {
+            if (clickhistory.value.length >= 11) {
                 const firstClickTime = clickhistory.value[0];
                 let sameDelayCount = 0;
                 const expectedDelay = clickhistory.value[1] - firstClickTime;
@@ -274,10 +274,10 @@
                         sameDelayCount++;
                     };
                 };
-                if (sameDelayCount >= 3) {
+                if (sameDelayCount >= 10) {
                     toast.add({
                         title: "Cheating detected!",
-                        description: "You have been detected using an autoclicker.",
+                        description: "You have been detected using an autoclicker and the game has been terminated.",
                         color: "red",
                         icon: "i-mdi-alert",
                         timeout: 5 * 1000
