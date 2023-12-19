@@ -64,7 +64,6 @@
     </div>
 </template>
 <script setup lang="ts">
-    import { getData, setData } from "nuxt-storage/local-storage";
     const app = useNuxtApp();
     const verid = ref("536b332a");
     const settings = app.$settings as any;
@@ -216,15 +215,17 @@
             };
         };
         static saveGame() {
-            setData("game", JSON.stringify({
-                melons: melons.value,
-                level: level.value,
-                total: total.value,
-                spent: spent.value,
-                tracking: tracking.value,
-                verid: verid.value,
-                data: data
-            }));
+            if (process.client) {
+                localStorage.setItem("game", JSON.stringify({
+                    melons: melons.value,
+                    level: level.value,
+                    total: total.value,
+                    spent: spent.value,
+                    tracking: tracking.value,
+                    verid: verid.value,
+                    data: data
+                }));
+            };
         };
         static tick() {
             if (banned.value) {
@@ -275,15 +276,17 @@
             Engine.saveGame();
         };
         static init() {
-            const game = getData("game");
-            if (game) {
-                const parsed = JSON.parse(game);
-                melons.value = parsed.melons;
-                level.value = parsed.level;
-                total.value = parsed.total;
-                spent.value = parsed.spent;
-                tracking.value = parsed.tracking;
-                data.buildings = parsed.data.buildings;
+            if (process.client) {
+                const game = localStorage.getItem("game");
+                if (game) {
+                    const parsed = JSON.parse(game);
+                    melons.value = parsed.melons;
+                    level.value = parsed.level;
+                    total.value = parsed.total;
+                    spent.value = parsed.spent;
+                    tracking.value = parsed.tracking;
+                    data.buildings = parsed.data.buildings;
+                };
             };
             lang.value = ticks.value === 1 ? "tick" : "ticks";
             for (const category of data.buildings.categories) {
@@ -308,11 +311,11 @@
             if (!banned.value) {
                 Engine.saveGame();
             } else {
-                setData("game", false);
+                if (process.client) localStorage.removeItem("game");
             };
         };
         static clear() {
-            setData("game", false);
+            if (process.client) localStorage.removeItem("game");
             location.reload();
         };
         static anticheat() {
