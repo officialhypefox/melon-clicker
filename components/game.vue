@@ -30,7 +30,7 @@
                             <span class="text-red-400">Conditions: <span v-for="(condition, index) in building.conditions" :key="index" class="text-gray-400">{{ Engine.title(condition.name) }}: <span class="text-blue-500">{{ condition.value.toLocaleString() }}</span></span></span>
                             <span class="text-red-500">Cost: <span v-for="(cost, index) in building.cost" :key="index" class="text-gray-400">{{ Engine.title(cost.name) }}: <span class="text-blue-500">{{ tracking[building.name + cost.name].toLocaleString() }}</span></span></span>
                         </div>
-                        <UButton @click="Engine.purchase(category.name, building.name)" label="Buy" color="blue" size="lg" class="w-full justify-center" trailing-icon="i-lucide-shopping-cart" />
+                        <UButton @click="Engine.purchase(category.name, building.name)" label="Purchase" color="blue" size="lg" class="w-full justify-center" trailing-icon="i-lucide-shopping-cart" />
                     </div>
                 </div>
             </div>
