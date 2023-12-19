@@ -304,7 +304,7 @@
         };
         static handleClick() {
             clickhistory.value.push(Date.now());
-            if (clickhistory.value.length > 15) {
+            if (clickhistory.value.length > 30) {
                 clickhistory.value.shift();
             };
             melons.value++;
@@ -321,7 +321,7 @@
             location.reload();
         };
         static anticheat() {
-            if (clickhistory.value.length >= 11) {
+            if (clickhistory.value.length >= 25) {
                 const firstClickTime = clickhistory.value[0];
                 let sameDelayCount = 0;
                 const expectedDelay = clickhistory.value[1] - firstClickTime;
@@ -334,7 +334,7 @@
                         sameDelayCount = 0;
                     };
                 };
-                if (sameDelayCount >= 10) {
+                if (sameDelayCount >= 20) {
                     toast.add({
                         title: "Cheating detected!",
                         description: "You have been detected using an autoclicker and the game has been terminated.",
