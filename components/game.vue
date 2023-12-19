@@ -44,7 +44,7 @@
                     Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> {{ lang }})
                 </div>
                 <div>
-                    &copy; {{ year }} <NuxtLink to="https://hypefoxstudios.com" class="text-blue-500">Hypefox Studios Ltd</NuxtLink> - All Rights Reserved | App v0.2 | Engine v0.3 | Build 39
+                    &copy; {{ year }} <NuxtLink to="https://hypefoxstudios.com" class="text-blue-500">Hypefox Studios Ltd</NuxtLink> - All Rights Reserved | Version ID <span class="text-blue-500">{{ verid }}</span>
                 </div>
                 <div class="pt-4">
                     <UButton @click="resetopen = true" label="Reset" color="red" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-trash" />
@@ -66,6 +66,7 @@
 <script setup lang="ts">
     import { getData, setData, clear } from "nuxt-storage/local-storage";
     const app = useNuxtApp();
+    const verid = ref("536b332a");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const clickhistory = ref(Array());
@@ -221,6 +222,7 @@
                 total: total.value,
                 spent: spent.value,
                 tracking: tracking.value,
+                verid: verid.value,
                 data: data
             }));
         };
