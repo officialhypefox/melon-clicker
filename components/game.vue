@@ -6,9 +6,7 @@
             <UIcon name="i-mdi-warning"/>
         </span>
         <span class="text-4xl text-gray-100">Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)</span>
-        <button tabindex="-1" @click="melons++; clicked++; newcps++">
-            <img draggable=false src="/img/melon.png" class="w-64 h-64" />
-        </button>
+        <img draggable=false @click="melons++; clicked++; newcps++" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64" />
         <span class="text-4xl text-gray-200">Shop for upgrades</span>
         <div class="grid">
             <div v-for="(category, index) in data.buildings.categories" :key="index">
@@ -37,7 +35,7 @@
                     Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> {{ lang }})
                 </div>
                 <div>
-                    &copy; Copyright <NuxtLink to="https://github.com/ItzExotical" class="text-blue-500">Emilio Persson</NuxtLink> {{ year }} - All Rights Reserved | App v0.2 | Engine v0.3 | Build 37
+                    &copy; {{ year }} <NuxtLink to="https://hypefoxstudios.com" class="text-blue-500">Hypefox Studios Ltd</NuxtLink> - All Rights Reserved | App v0.2 | Engine v0.3 | Build 39
                 </div>
             </div>
         </footer>

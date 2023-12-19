@@ -1,38 +1,24 @@
 {
-  "name": "melon-clicker",
-  "author": "Hypefox Studios LTD",
-  "version": "1.0.0",
-  "description": "A simple clicker game made with Nuxt and TypeScript.",
+  "name": "nuxt-app",
   "private": true,
-  "type": "commonjs",
-  "main": "dist-electron/main.js",
   "scripts": {
-    "production": "nuxt build && electron-forge make",
-    "prepare": "nuxt build && electron-forge package",
+    "start": "node .output/server/index.mjs",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
-    "@electron-forge/cli": "^6.4.2",
-    "@electron-forge/maker-deb": "^6.4.2",
-    "@electron-forge/maker-rpm": "^6.4.2",
-    "@electron-forge/maker-squirrel": "^6.4.2",
-    "@electron-forge/maker-zip": "^6.4.2",
-    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "@electron-forge/plugin-vite": "^6.4.2",
     "@nuxt/devtools": "^1.0.0-beta.3",
     "electron": "^27.0.2",
-    "nuxt": "^3.7.3",
-    "nuxt-electron": "^0.6.0",
-    "vite-plugin-electron": "^0.14.1",
-    "vite-plugin-electron-renderer": "^0.14.5"
+    "nuxt": "^3.7.3"
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.1.54",
-    "@nuxt/ui": "^2.8.1",
-    "electron-squirrel-startup": "^1.0.0"
+    "@nuxt/ui": "^2.8.1"
   }
 }
