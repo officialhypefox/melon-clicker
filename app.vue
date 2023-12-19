@@ -7,15 +7,15 @@
   </UContainer>
 </template>
 <script setup lang="ts">
-    const description = "A small little browser game I developed with Nuxt and scripted in TypeScript and Vue.";
+    const description = "The official game for the cloud computing provider Melonslab.";
     useSeoMeta({
-        title: "Melon Clicker",
-        author: "ItzExotical",
+        title: "Melon Clicker 🍉",
+        author: "Hypefox Studios Ltd",
         ogLocale: "en_GB",
-        ogTitle: "Exotical's Melon Clicker game 🍉",
+        ogTitle: "Melon Clicker 🍉",
         description: description,
         ogDescription: description,
-        ogImage: "https://game.exotical.se/img/melon.png",
+        ogImage: "https://cdn.hypefoxstudios.com/data/melon/img/logo.png",
         twitterCard: "summary_large_image",
         themeColor: [
             {
