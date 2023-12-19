@@ -65,7 +65,7 @@
 </template>
 <script setup lang="ts">
     const app = useNuxtApp();
-    const verid = ref("536b332a");
+    const verid = ref("11a99af6");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const clickhistory = ref(Array());
@@ -287,7 +287,17 @@
                     total.value = parsed.total;
                     spent.value = parsed.spent;
                     tracking.value = parsed.tracking;
-                    data.buildings = parsed.data.buildings;
+                    if (parsed.verid !== verid.value) {
+                        toast.add({
+                            title: "Game updated!",
+                            description: `The game has been updated to version ${verid.value}. Your save data has been migrated, reset if you encounter any issues.`,
+                            color: "blue",
+                            icon: "i-lucide-rocket",
+                            timeout: 5 * 1000
+                        });
+                    } else {
+                        data.buildings = parsed.data.buildings;
+                    };
                 };
             };
             lang.value = ticks.value === 1 ? "tick" : "ticks";
