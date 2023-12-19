@@ -1,6 +1,6 @@
 const settings = {
     general: {
-        inflationRate: 10
+        inflationRate: 5
     },
     leveling: {
         base: 10
