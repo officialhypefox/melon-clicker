@@ -8,7 +8,7 @@
               class="text-orange-400 hover:text-orange-300 mr-2"
               >Hypefox</a
             >
-            <span class="text-green-500">Melon</span> <span class="text-red-500">Clicker</span> <span class="text-gray-400">{{ verid }}</span>
+            <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span> <span class="text-gray-400">{{ verid }}</span>
           </div>
           <div class="text-xl flex gap-x-2">
             <div>
