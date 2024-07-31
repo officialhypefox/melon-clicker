@@ -73,7 +73,7 @@
                     {{ building.description }}
                   </div>
                   <div
-                    class="text-xs text-green-400 flex justify-center gap-x-1 mb-1"
+                    class="text-xs text-green-400 flex justify-center gap-x-1"
                   >
                     Production:
                     <span v-for="(output, index) in building.output" :key="index">
@@ -82,7 +82,7 @@
                     </span>
                   </div>
                   <div
-                    class="text-xs text-red-400 flex justify-center gap-x-1 mb-2"
+                    class="text-xs text-red-400 flex justify-center gap-x-1"
                   >
                     Cost:
                     <span v-for="(cost, index) in building.cost" :key="index">
@@ -90,6 +90,14 @@
                       cost.name].toLocaleString() }}
                     </span>
                   </div>
+                  <div
+                        class="text-xs text-orange-400 flex justify-center gap-x-1 mb-2"
+                    >
+                    Conditions:
+                    <span v-for="(condition, index) in building.conditions" :key="index">
+                        {{ Engine.title(condition.name) }}: {{ condition.value }}
+                    </span>
+                </div>
                   <UButton
                     @click="Engine.purchase(building.category, building.name)"
                     label="Purchase"
