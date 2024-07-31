@@ -194,7 +194,7 @@
 <script setup lang="ts">
     const app = useNuxtApp();
     const loading = ref(true);
-    const verid = ref("v2-beta01");
+    const verid = ref("v2-beta02");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const clickhistory = ref(Array());
