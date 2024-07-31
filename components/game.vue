@@ -10,15 +10,8 @@
             >
             <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span> <span class="text-gray-400">{{ verid }}</span>
           </div>
-          <div class="text-xl flex gap-x-2">
-            <div>
-              Melons:
-              <span class="text-green-400">{{ melons.toLocaleString() }}</span>
-            </div>
-            <div>
-              Level:
-              <span class="text-green-400">{{ level.toLocaleString() }}</span>
-            </div>
+          <div class="text-xl">
+            Level: <span class="text-green-400">{{ level.toLocaleString() }}</span>
           </div>
         </div>
       </header>
@@ -30,9 +23,16 @@
             <div
               class="lg:w-1/4 flex flex-col items-center justify-center lg:justify-center"
             >
-              <div class="text-xl mb-4">
-                <span class="text-green-400">{{ mps.toLocaleString() }}</span>
-                melon{{ mps != 1 ? "s": "" }}/sec
+              <div class="text-xl mb-4 flex gap-x-2">
+                <div>
+              <div>
+                Melons:
+                <span class="text-green-400">{{ melons.toLocaleString() }}</span>
+              </div>
+            </div>
+                <div>
+                    (<span class="text-green-400">{{ mps.toLocaleString() }}</span>/sec)
+                </div>
               </div>
               <button
                 @click="handleMelonClick"
@@ -97,15 +97,28 @@
                         {{ Engine.title(condition.name) }}: {{ condition.value }}
                     </span>
                 </div>
-                  <UButton
+                  <div class="flex justify-around">
+                    <UButton
                     @click="Engine.purchase(building.category, building.name)"
-                    label="Purchase"
+                    label="Buy 1"
                     color="green"
-                    size="xs"
-                    class="w-full justify-center"
-                    trailing-icon="i-lucide-shopping-cart"
-                    :disabled="!Engine.purchase(building.category, building.name, false)"
+                    size="sm"
+                    variant="soft"
+                    class="justify-center"
+                    trailing-icon="i-lucide-coins"
+                    :disabled="!Engine.purchase(building.category, building.name, false, false)"
                   />
+                    <UButton
+                        @click="Engine.purchase(building.category, building.name, true)"
+                        :label="`Buy Max (${Engine.purchase(building.category, building.name, true, false) || 0})`"
+                        color="red"
+                        size="sm"
+                        variant="outline"
+                        class="justify-center"
+                        trailing-icon="i-lucide-shopping-cart"
+                        :disabled="!Engine.purchase(building.category, building.name, true, false)"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -194,7 +207,7 @@
 <script setup lang="ts">
     const app = useNuxtApp();
     const loading = ref(true);
-    const verid = ref("v2-beta02");
+    const verid = ref("v2-beta03");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const clickhistory = ref(Array());
@@ -254,14 +267,21 @@
     const flattenedBuildings = computed(() => {
         return data.buildings.categories.flatMap((category: Category) => 
             category.members.map((building: Building) => ({
-            ...building,
-            category: category.name
+                ...building,
+                category: category.name
             }))
         );
     });
     class Engine {
-        static price(base: number, owned: number) {
-            return (0.1 * base * owned + base) * settings.general.inflationRate;
+        static price(basePrice: number, ownedCount: number, quantity: number = 1): number {
+            const inflationRate = settings.general.inflationRate;
+            let totalPrice = 0;
+            for (let i = 0; i < quantity; i++) {
+                const exponent = Math.floor((ownedCount + i) / 2);
+                const currentPrice = basePrice * Math.pow(1 + inflationRate, exponent);
+                totalPrice += currentPrice;
+            };
+            return Number(totalPrice.toFixed(2));
         };
         static progress(percentage: boolean = true) {
             let result = 0;
@@ -292,9 +312,7 @@
                 };
             } else {
                 for (const category of data.buildings.categories) {
-                    for (const building of category.members) {
-                        count++;
-                    };
+                    count += category.members.length;
                 };
             };
             return count;
@@ -312,45 +330,87 @@
             };
             return 0;
         };
-        static purchase(categoryName: string, buildingName: string, propagate = true) {
+        static purchase(categoryName: string, buildingName: string, max: boolean = false, propagate = true) {
             const category = data.buildings.categories.find((category: Category) => category.name === categoryName);
-            if (!category) {
-                return false;
-            };
+            if (!category) return console.error(`Category ${categoryName} not found. Fatal error.`);
             const building = category.members.find((building: Building) => building.name === buildingName);
-            if (!building) {
-                return false;
-            };
-            if (building.owned >= building.limit) {
-                return false;
-            };
-            for (const condition of building.conditions) {
-                switch (condition.name) {
+            if (!building) return console.error(`Building ${buildingName} not found. Fatal error.`);
+            for (const requirement of building.conditions) {
+                switch (requirement.name) {
                     case "level":
-                        if (level.value < condition.value) {
+                        if (level.value < requirement.value) {
                             return false;
                         };
                         break;
                 };
             };
-            for (const cost of building.cost) {
-                switch (cost.name) {
-                    case "melons":
-                        const price = Engine.price(cost.base, building.owned);
-                        if (melons.value < price) {
-                            return false;
-                        };
-                        if (!propagate) {
-                            return true;
-                        };
-                        melons.value -= price;
-                        spent.value += price;
-                        building.owned++;
-                        tracking.value[building.name + cost.name] = Engine.price(cost.base, building.owned);
-                        break;
+            if (max) {
+                const maxPossibleBuys = building.limit - building.owned;
+                let maxAfforded = 0;
+                let totalPrice = 0;
+                for (const cost of building.cost) {
+                    switch (cost.name) {
+                        case "melons":
+                            for (let i = maxPossibleBuys; i > 0; i--) {
+                                let canAfford = true;
+                                let totalCost = 0;
+                                for (let j = 0; j < i; j++) {
+                                    const price = Engine.price(cost.base, building.owned + j, 1);
+                                    totalCost += price;
+                                    totalPrice = totalCost;
+                                    if (melons.value < totalCost) {
+                                        canAfford = false;
+                                        break;
+                                    };
+                                };
+                                if (canAfford) {
+                                    maxAfforded = i;
+                                    break;
+                                };
+                            };
+                            break;
+                    };
+                }
+                if (!propagate) {
+                    return maxAfforded;
                 };
+                for (const cost of building.cost) {
+                    switch (cost.name) {
+                        case "melons":
+                            console.log(`Purchasing ${maxAfforded} of ${building.name}`);
+                            console.log(`Will debit ${totalPrice} melons`);
+                            melons.value -= totalPrice;
+                            spent.value += totalPrice;
+                            break;
+                    };
+                };
+                building.owned += maxAfforded;
+                return true;
+            } else {
+                let canAfford = true;
+                for (const cost of building.cost) {
+                    switch (cost.name) {
+                        case "melons":
+                            if (melons.value < Engine.price(cost.base, building.owned)) {
+                                canAfford = false;
+                            };
+                            break;
+                    };
+                };
+                if (!propagate) {
+                    return canAfford;
+                };
+                for (const cost of building.cost) {
+                    switch (cost.name) {
+                        case "melons":
+                            melons.value -= Engine.price(cost.base, building.owned);
+                            spent.value += Engine.price(cost.base, building.owned);
+                            break;
+                    };
+                };
+                building.owned++;
+                return true;
             };
-            return true;
         };
         static saveGame() {
             if (!import.meta.server) {
@@ -495,14 +555,14 @@
             };
         };
     };
-    setTimeout(() => {
-        Engine.init();
-        loading.value = false;
-    }, 1000);
     onMounted(() => {
+        setTimeout(() => {
+            Engine.init();
+            loading.value = false;
+        }, 1000);
         setInterval(() => {
             Engine.tick();
-        }, 1000);
+        }, settings.tick.interval * 1000);
     });
     console.info("[✅] Engine is running.");
 </script>
