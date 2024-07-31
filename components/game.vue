@@ -113,7 +113,7 @@
         </div>
       </main>
   
-      <footer class="bg-gray-800 p-4 mt-auto">
+      <footer class="bg-gray-800 p-3 mt-auto">
         <div class="container mx-auto text-sm text-gray-400">
           <div class="flex justify-center gap-x-2">
             <div>
