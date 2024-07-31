@@ -60,7 +60,11 @@
                 <div
                   v-for="(building, buildIndex) in flattenedBuildings"
                   :key="buildIndex"
-                  class="bg-gray-800 p-3 rounded hover:bg-gray-700 transition-colors duration-200"
+                  class="bg-gray-800 p-3 rounded transition-colors duration-200"
+                  :class="{
+                        'hover:bg-gray-700': building.owned < building.limit,
+                        '!opacity-50': building.owned >= building.limit
+                    }"
                 >
                   <div class="flex justify-between items-center mb-1">
                     <span class="font-medium text-sm">{{ building.name }}</span>
@@ -214,10 +218,11 @@
     const runtime = ref("00:00:00");
     const data = app.$data as any;
     const resetopen = ref(false);
+    const shouldTick = ref(true);
     const banned = ref(false);
     const toast = useToast();
     const clicked = ref(0);
-    const melons = ref(0);
+    const melons = ref(100000);
     const ticks = ref(0);
     const lang = ref("");
     const level = ref(1);
@@ -274,14 +279,7 @@
     });
     class Engine {
         static price(basePrice: number, ownedCount: number, quantity: number = 1): number {
-            const inflationRate = settings.general.inflationRate;
-            let totalPrice = 0;
-            for (let i = 0; i < quantity; i++) {
-                const exponent = Math.floor((ownedCount + i) / 2);
-                const currentPrice = basePrice * Math.pow(1 + inflationRate, exponent);
-                totalPrice += currentPrice;
-            };
-            return Number(totalPrice.toFixed(2));
+            return basePrice * (1 + ownedCount * quantity) * settings.general.inflationRate;
         };
         static progress(percentage: boolean = true) {
             let result = 0;
@@ -377,14 +375,13 @@
                 for (const cost of building.cost) {
                     switch (cost.name) {
                         case "melons":
-                            console.log(`Purchasing ${maxAfforded} of ${building.name}`);
-                            console.log(`Will debit ${totalPrice} melons`);
                             melons.value -= totalPrice;
                             spent.value += totalPrice;
                             break;
                     };
                 };
                 building.owned += maxAfforded;
+                tracking.value[building.name + "melons"] = Engine.price(building.cost[0].base, building.owned);
                 return true;
             } else {
                 let canAfford = true;
@@ -396,6 +393,9 @@
                             };
                             break;
                     };
+                };
+                if (building.owned >= building.limit) {
+                    return false;
                 };
                 if (!propagate) {
                     return canAfford;
@@ -409,6 +409,7 @@
                     };
                 };
                 building.owned++;
+                tracking.value[building.name + "melons"] = Engine.price(building.cost[0].base, building.owned);
                 return true;
             };
         };
@@ -427,7 +428,7 @@
             };
         };
         static tick() {
-            if (banned.value) {
+            if (banned.value || !shouldTick.value) {
                 return;
             };
             ticks.value++;
@@ -496,6 +497,14 @@
                             timeout: 5 * 1000
                         });
                     };
+                } else {
+                    toast.add({
+                        title: "Welcome to Melon Clicker!",
+                        description: "This is your first time playing the game. Enjoy!",
+                        color: "green",
+                        icon: "i-lucide-heart",
+                        timeout: 5 * 1000
+                    });
                 };
             };
             lang.value = ticks.value === 1 ? "tick" : "ticks";
@@ -525,6 +534,8 @@
             };
         };
         static clear() {
+            shouldTick.value = false;
+            loading.value = true;
             if (!import.meta.server) localStorage.removeItem("game");
             location.reload();
         };
