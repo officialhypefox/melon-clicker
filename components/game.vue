@@ -14,7 +14,7 @@
         Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)
       </div>
       <button @click="Engine.handleClick" class="focus:outline-none">
-        <img draggable="false" src="https://cdn.hypefoxstudios.com/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer select-none" />
+        <img draggable="false" src="https://cdn.hypefox.net/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer select-none" />
       </button>
       <span class="text-4xl text-gray-200">Shop for upgrades</span>
         <div class="grid">
