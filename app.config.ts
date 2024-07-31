@@ -2,7 +2,7 @@
 export default defineAppConfig({
     ui: {
         notifications: {
-            position: "top-0 bottom-auto"
+            position: "top-0"
         },
         notification: {
             background: "!bg-dark-secondary",
