@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!banned" class="bg-gray-900 min-h-screen flex flex-col text-white">
+    <div v-if="!banned && !loading" class="bg-gray-900 min-h-screen flex flex-col text-white">
       <header class="bg-gray-800 p-4 sticky top-0 z-10">
         <div class="container mx-auto flex justify-between items-center">
           <div class="text-2xl font-bold">
@@ -86,8 +86,7 @@
                   >
                     Cost:
                     <span v-for="(cost, index) in building.cost" :key="index">
-                      {{ Engine.title(cost.name) }}: {{ tracking[building.name +
-                      cost.name].toLocaleString() }}
+                      {{ Engine.title(cost.name) }}: {{ Engine.price(cost.base, Engine.getOwned(building.name)).toLocaleString() }}
                     </span>
                   </div>
                   <div
@@ -167,6 +166,9 @@
       </UModal>
     </div>
   
+    <div v-else-if="loading" class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+      <UIcon name="i-lucide-loader" class="text-green-500 text-6xl md:text-8xl animate-spin" />
+    </div>
     <div
       v-if="banned"
       class="min-h-screen flex items-center justify-center p-4 bg-gray-900"
@@ -191,6 +193,7 @@
 </template>
 <script setup lang="ts">
     const app = useNuxtApp();
+    const loading = ref(true);
     const verid = ref("v2-beta01");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
@@ -492,11 +495,14 @@
             };
         };
     };
-    Engine.init();
-    if (!import.meta.server) {
+    setTimeout(() => {
+        Engine.init();
+        loading.value = false;
+    }, 1000);
+    onMounted(() => {
         setInterval(() => {
             Engine.tick();
         }, 1000);
-    };
+    });
     console.info("[✅] Engine is running.");
 </script>
