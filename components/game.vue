@@ -1,75 +1,189 @@
 <template>
-    <div v-if="!banned" class="bg-dark-primary h-screen items-center justify-center text-center flex flex-col gap-y-10">
+    <div v-if="!banned" class="bg-gray-900 min-h-screen flex flex-col text-white">
+      <header class="bg-gray-800 p-4 sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+          <div class="text-2xl font-bold">
+            <a
+              href="https://hypefoxstudios.com"
+              class="text-orange-400 hover:text-orange-300 mr-2"
+              >Hypefox</a
+            >
+            <span class="text-green-500">Melon</span> <span class="text-red-500">Clicker</span> <span class="text-gray-400">{{ verid }}</span>
+          </div>
+          <div class="text-xl flex gap-x-2">
+            <div>
+              Melons:
+              <span class="text-green-400">{{ melons.toLocaleString() }}</span>
+            </div>
+            <div>
+              Level:
+              <span class="text-green-400">{{ level.toLocaleString() }}</span>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="flex-grow flex items-center justify-center p-4">
+        <div
+          class="container mx-auto flex flex-col lg:flex-row items-center gap-8"
+        >
+          <div class="flex flex-col lg:flex-row lg:items-center gap-8">
+            <div
+              class="lg:w-1/4 flex flex-col items-center justify-center lg:justify-center"
+            >
+              <div class="text-xl mb-4">
+                <span class="text-green-400">{{ mps.toLocaleString() }}</span>
+                melon{{ mps != 1 ? "s": "" }}/sec
+              </div>
+              <button
+                @click="handleMelonClick"
+                class="focus:outline-none relative group flex items-center justify-center"
+              >
+                <img
+                  ref="melonImage"
+                  draggable="false"
+                  src="https://cdn.hypefox.net/data/melon/img/icon.svg"
+                  class="w-72 cursor-pointer select-none transition-all duration-200 ease-in-out group-hover:scale-105"
+                />
+              </button>
+            </div>
+  
+            <div class="lg:w-3/4 flex flex-col">
+              <h2 class="text-2xl font-bold mb-4">
+                Real Estate Broker (<span class="text-green-400"
+                  >{{ data.buildings.categories[0].members.length }}</span
+                >
+                available)
+              </h2>
+              <div
+                class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              >
+                <div
+                  v-for="(building, buildIndex) in flattenedBuildings"
+                  :key="buildIndex"
+                  class="bg-gray-800 p-3 rounded hover:bg-gray-700 transition-colors duration-200"
+                >
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-medium text-sm">{{ building.name }}</span>
+                    <span class="text-xs text-gray-400"
+                      >{{ Engine.getOwned(building.name) }}/{{ building.limit
+                      }}</span
+                    >
+                  </div>
+                  <div class="text-xs text-gray-400 text-center mb-1">
+                    {{ building.description }}
+                  </div>
+                  <div
+                    class="text-xs text-green-400 flex justify-center gap-x-1 mb-1"
+                  >
+                    Production:
+                    <span v-for="(output, index) in building.output" :key="index">
+                      {{ Engine.title(output.name) }}: {{ (output.value *
+                      settings.general.inflationRate).toLocaleString() }}
+                    </span>
+                  </div>
+                  <div
+                    class="text-xs text-red-400 flex justify-center gap-x-1 mb-2"
+                  >
+                    Cost:
+                    <span v-for="(cost, index) in building.cost" :key="index">
+                      {{ Engine.title(cost.name) }}: {{ tracking[building.name +
+                      cost.name].toLocaleString() }}
+                    </span>
+                  </div>
+                  <UButton
+                    @click="Engine.purchase(building.category, building.name)"
+                    label="Purchase"
+                    color="green"
+                    size="xs"
+                    class="w-full justify-center"
+                    trailing-icon="i-lucide-shopping-cart"
+                    :disabled="!Engine.purchase(building.category, building.name, false)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+  
+      <footer class="bg-gray-800 p-4 mt-auto">
+        <div class="container mx-auto text-sm text-gray-400">
+          <div class="flex justify-center gap-x-2">
+            <div>
+              Total earned:
+              <span class="text-green-400"
+                >{{ (total + clicked).toLocaleString() }}</span
+              >
+            </div>
+            <div>
+              Total spent:
+              <span class="text-green-400">{{ spent.toLocaleString() }}</span>
+            </div>
+            <div>
+              Progress:
+              <span class="text-green-400">{{ Engine.progress() }}%</span>
+            </div>
+          </div>
+          <div class="text-center">
+            &copy; {{ year }}
+            <a
+              href="https://hypefoxstudios.com"
+              class="text-orange-400 hover:text-orange-300"
+              >Hypefox Corporation</a
+            >
+            <UButton
+              @click="resetopen = true"
+              label="Reset Game"
+              trailing-icon="i-lucide-trash"
+              square
+              color="red"
+              size="xs"
+              class="ml-2 mt-1"
+            />
+          </div>
+        </div>
+      </footer>
+  
       <UModal v-model="resetopen">
-        <div class="flex flex-col items-center gap-y-4 py-8 text-center">
-          <span class="text-4xl text-gray-100">Reset save data?</span>
-          <span class="text-gray-400">All game progress will be wiped and the game will reload.<br>This can not be undone.</span>
-          <div class="flex gap-x-4">
-            <UButton @click="resetopen = false" label="Cancel" color="blue" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-x" />
-            <UButton @click="Engine.clear()" label="Reset" color="red" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-trash" />
+        <div class="bg-gray-800 p-6 rounded-lg">
+          <h3 class="text-2xl font-bold mb-4">Reset save data?</h3>
+          <p class="text-gray-400 mb-6">
+            All game progress will be wiped and the game will reload. This cannot
+            be undone.
+          </p>
+          <div class="flex justify-end gap-4">
+            <UButton @click="resetopen = false" label="Cancel" color="gray" />
+            <UButton @click="Engine.clear()" label="Reset" color="red" />
           </div>
         </div>
       </UModal>
-      <div class="text-4xl text-gray-100">
-        Melons: <span class="text-blue-500">{{ melons.toLocaleString() }}</span> (<span class="text-blue-500">{{ mps.toLocaleString() }}</span>/sec)
-      </div>
-      <button @click="Engine.handleClick" class="focus:outline-none">
-        <img draggable="false" src="https://cdn.hypefox.net/data/melon/img/icon.svg" class="w-64 h-64 cursor-pointer select-none" />
-      </button>
-      <span class="text-4xl text-gray-200">Shop for upgrades</span>
-        <div class="grid">
-            <div v-for="(category, index) in data.buildings.categories" :key="index">
-                <span class="text-indigo-200 text-2xl">{{ category.name }} (<span class="text-blue-500">{{ category.members.length }}</span>)</span>
-                <div class="flex flex-wrap">
-                    <div v-for="(building, index) in category.members" :key="index" class="mr-4 mb-4">
-                        <div class="grid mb-2">
-                            <span class="text-indigo-400 text-2xl mt-4">{{ building.name }} (<span class="text-blue-500">{{ building.owned }}</span>/<span class="text-blue-500">{{ building.limit }}</span> owned) </span>
-                            <span class="text-gray-500"><span class="text-blue-500">{{ Math.floor((building.owned / building.limit) * 100) }}% </span>completed</span>
-                            <span class="text-gray-400 max-w-xs break-words">{{ building.description }}</span>
-                            <span class="text-green-600">Production: <span v-for="(output, index) in building.output" :key="index" class="text-gray-400">{{ Engine.title(output.name) }}: <span class="text-blue-500">{{ (output.value * settings.general.inflationRate).toLocaleString() }}</span></span></span>
-                            <span class="text-red-400">Conditions: <span v-for="(condition, index) in building.conditions" :key="index" class="text-gray-400">{{ Engine.title(condition.name) }}: <span class="text-blue-500">{{ condition.value.toLocaleString() }}</span></span></span>
-                            <span class="text-red-500">Cost: <span v-for="(cost, index) in building.cost" :key="index" class="text-gray-400">{{ Engine.title(cost.name) }}: <span class="text-blue-500">{{ tracking[building.name + cost.name].toLocaleString() }}</span></span></span>
-                        </div>
-                        <UButton @click="Engine.purchase(category.name, building.name)" label="Purchase" color="blue" size="lg" class="w-full justify-center" trailing-icon="i-lucide-shopping-cart" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <footer>
-            <div class="grid text-white">
-                <div>
-                    Level: <span class="text-blue-500">{{ level.toLocaleString() }}</span> | MPS for next level: <span class="text-blue-500">{{ Engine.leveling().toLocaleString() }}</span> (<span class="text-blue-500">{{ (Engine.leveling() - mps).toLocaleString() }}</span> left) | Total earned: <span class="text-blue-500">{{ (total + clicked).toLocaleString() }}</span> | Total spent: <span class="text-blue-500">{{ spent.toLocaleString() }}</span> | Total buildings: <span class="text-blue-500">{{ Engine.buildings().toLocaleString() }}</span>/<span class="text-blue-500">{{ Engine.buildings(true, true).toLocaleString() }}</span> | Earned from buildings: <span class="text-blue-500">{{ total.toLocaleString() }}</span> | Earned from clicking: <span class="text-blue-500">{{ clicked.toLocaleString() }}</span>
-                </div>
-                <div>
-                    Total game progress: <span class="text-blue-500">{{ Engine.progress() }}%</span> | Maxed out: <span class="text-blue-500">{{ Engine.progress(false) }}</span>/<span class="text-blue-500">{{ Engine.buildings(false) }}</span> | Engine runtime: <span class="text-blue-500">{{ runtime }}</span> (<span class="text-blue-500">{{ ticks }}</span> {{ lang }})
-                </div>
-                <div>
-                    &copy; {{ year }}
-                    <NuxtLink to="https://hypefoxstudios.com" class="text-orange-500 hover:text-orange-600">
-                        Hypefox Corporation
-                    </NuxtLink>
-                    | Version ID: <span class="text-blue-500">{{ verid }}</span>
-                </div>
-                <div class="pt-4">
-                    <UButton @click="resetopen = true" label="Reset" color="red" size="lg" class="w-22 h-8 justify-center" trailing-icon="i-lucide-trash" />
-                </div>
-            </div>
-        </footer>
     </div>
-    <div v-if="banned">
-        <div class="flex items-center justify-center h-screen">
-            <div class="flex flex-col items-center gap-y-2">
-                <UIcon name="i-lucide-alert-triangle" class="text-red-500 text-[10rem]" />
-                <a class="text-red-500 text-4xl font-bold uppercase">Cheating detected!</a>
-                <a class="text-red-500 text-xl">Looks like you've been caught red-handed! Remember, in the game of life, cheats never prosper. Better luck next time!</a>
-                <a class="text-red-500 text-xl font-extrabold">Save data has been destroyed.</a>
-            </div>
-        </div>
+  
+    <div
+      v-if="banned"
+      class="min-h-screen flex items-center justify-center p-4 bg-gray-900"
+    >
+      <div class="text-center">
+        <UIcon
+          name="i-lucide-alert-triangle"
+          class="text-red-500 text-6xl md:text-8xl mb-4"
+        />
+        <h2 class="text-red-500 text-3xl md:text-4xl font-bold mb-4">
+          Cheating Detected!
+        </h2>
+        <p class="text-gray-400 text-lg mb-4">
+          Looks like you've been caught red-handed! Remember, in the game of life,
+          cheats never prosper.
+        </p>
+        <p class="text-red-400 text-xl font-bold">
+          Save data has been destroyed.
+        </p>
+      </div>
     </div>
 </template>
 <script setup lang="ts">
     const app = useNuxtApp();
-    const verid = ref("11a99af6");
+    const verid = ref("v2-beta01");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const clickhistory = ref(Array());
@@ -107,15 +221,33 @@
         description: string;
         owned: number;
         limit: number;
-        cost: Array<Cost>;
-        conditions: Array<Condition>;
-        output: Array<Output>;
+        cost: Array < Cost > ;
+        conditions: Array < Condition > ;
+        output: Array < Output > ;
     };
     interface Category {
         name: string;
-        members: Array<Building>;
+        members: Array < Building > ;
     };
     const tracking = ref({} as Tracking);
+    const melonImage = ref(null as any);
+    const handleMelonClick = () => {
+        Engine.handleClick()
+        if (melonImage.value) {
+            melonImage.value.style.transform = "scale(0.75)";
+            setTimeout(() => {
+                melonImage.value.style.transform = "scale(1)";
+            }, 50);
+        };
+    };
+    const flattenedBuildings = computed(() => {
+        return data.buildings.categories.flatMap((category: Category) => 
+            category.members.map((building: Building) => ({
+            ...building,
+            category: category.name
+            }))
+        );
+    });
     class Engine {
         static price(base: number, owned: number) {
             return (0.1 * base * owned + base) * settings.general.inflationRate;
@@ -159,31 +291,33 @@
         static leveling() {
             return settings.leveling.base * (level.value ** 2);
         };
-        static purchase(categoryName: string, buildingName: string) {
+        static getOwned(buildingName: string) {
+            for (const category of data.buildings.categories) {
+                for (const building of category.members) {
+                    if (building.name === buildingName) {
+                        return building.owned;
+                    };
+                };
+            };
+            return 0;
+        };
+        static purchase(categoryName: string, buildingName: string, propagate = true) {
             const category = data.buildings.categories.find((category: Category) => category.name === categoryName);
+            if (!category) {
+                return false;
+            };
             const building = category.members.find((building: Building) => building.name === buildingName);
+            if (!building) {
+                return false;
+            };
             if (building.owned >= building.limit) {
-                toast.add({
-                    title: "Limit check failed.",
-                    description: `You have reached the limit (${building.owned}/${building.limit}) of ${building.name}.`,
-                    color: "red",
-                    icon: "i-lucide-alert-circle",
-                    timeout: 5 * 1000
-                });
-                return;
+                return false;
             };
             for (const condition of building.conditions) {
                 switch (condition.name) {
                     case "level":
                         if (level.value < condition.value) {
-                            toast.add({
-                                title: "Condition check failed.",
-                                description: `You do not meet the required level to purchase this item (need ${condition.value.toLocaleString()}, have ${level.value.toLocaleString()}).`,
-                                color: "red",
-                                icon: "i-lucide-alert-circle",
-                                timeout: 5 * 1000
-                            });
-                            return;
+                            return false;
                         };
                         break;
                 };
@@ -191,28 +325,24 @@
             for (const cost of building.cost) {
                 switch (cost.name) {
                     case "melons":
-                        let price = Engine.price(cost.base, building.owned);
-                        if (melons.value >= price) {
-                            melons.value -= price;
-                            spent.value += price;
-                            building.owned++;
-                            price = Engine.price(cost.base, building.owned);
-                            tracking.value[building.name + cost.name] = price;
-                        } else {
-                            toast.add({
-                                title: "Transaction check failed.",
-                                description: `You do not have enough melons to purchase this item (need ${price.toLocaleString()}, have ${melons.value.toLocaleString()}, missing ${(price - melons.value).toLocaleString()}).`,
-                                color: "red",
-                                icon: "i-lucide-alert-circle",
-                                timeout: 5 * 1000
-                            });
+                        const price = Engine.price(cost.base, building.owned);
+                        if (melons.value < price) {
+                            return false;
                         };
+                        if (!propagate) {
+                            return true;
+                        };
+                        melons.value -= price;
+                        spent.value += price;
+                        building.owned++;
+                        tracking.value[building.name + cost.name] = Engine.price(cost.base, building.owned);
                         break;
                 };
             };
+            return true;
         };
         static saveGame() {
-            if (process.client) {
+            if (!import.meta.server) {
                 localStorage.setItem("game", JSON.stringify({
                     melons: melons.value,
                     clicks: clicked.value,
@@ -250,13 +380,6 @@
             };
             if (mps.value >= Engine.leveling()) {
                 level.value++;
-                toast.add({
-                    title: "Level up!",
-                    description: `Good job! You have reached level ${level.value.toLocaleString()}.`,
-                    color: "blue",
-                    icon: "i-lucide-rocket",
-                    timeout: 5 * 1000
-                });
             };
             let seconds = parseInt(runtime.value.split(":")[2]);
             let minutes = parseInt(runtime.value.split(":")[1]);
@@ -274,7 +397,7 @@
             Engine.saveGame();
         };
         static init() {
-            if (process.client) {
+            if (!import.meta.server) {
                 const game = localStorage.getItem("game");
                 if (game) {
                     const parsed = JSON.parse(game);
@@ -294,6 +417,13 @@
                         });
                     } else {
                         data.buildings = parsed.data.buildings;
+                        toast.add({
+                            title: "Game loaded!",
+                            description: "Your save data has been successfully loaded.",
+                            color: "green",
+                            icon: "i-lucide-check",
+                            timeout: 5 * 1000
+                        });
                     };
                 };
             };
@@ -320,11 +450,11 @@
             if (!banned.value) {
                 Engine.saveGame();
             } else {
-                if (process.client) localStorage.removeItem("game");
+                if (!import.meta.server) localStorage.removeItem("game");
             };
         };
         static clear() {
-            if (process.client) localStorage.removeItem("game");
+            if (!import.meta.server) localStorage.removeItem("game");
             location.reload();
         };
         static anticheat() {
@@ -355,5 +485,10 @@
         };
     };
     Engine.init();
-    setInterval(Engine.tick, settings.tick.interval * 1000);
+    if (!import.meta.server) {
+        setInterval(() => {
+            Engine.tick();
+        }, 1000);
+    };
+    console.info("[✅] Engine is running.");
 </script>
