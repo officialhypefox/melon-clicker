@@ -10,12 +10,12 @@
     const description = "The official game for the cloud computing provider Melonslab.";
     useSeoMeta({
         title: "Melon Clicker 🍉",
-        author: "Hypefox Studios Ltd",
+        author: "Hypefox Ltd",
         ogLocale: "en_GB",
         ogTitle: "Melon Clicker 🍉",
         description: description,
         ogDescription: description,
-        ogImage: "https://cdn.hypefoxstudios.com/data/melon/img/logo.png",
+        ogImage: "https://cdn.hypefox.net/data/melon/img/logo.png",
         twitterCard: "summary_large_image",
         themeColor: [
             {
