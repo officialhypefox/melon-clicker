@@ -211,7 +211,7 @@
 <script setup lang="ts">
     const app = useNuxtApp();
     const loading = ref(true);
-    const verid = ref("v2-beta03");
+    const verid = ref("v2-beta04");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const clickhistory = ref(Array());
@@ -222,7 +222,7 @@
     const banned = ref(false);
     const toast = useToast();
     const clicked = ref(0);
-    const melons = ref(100000);
+    const melons = ref(0);
     const ticks = ref(0);
     const lang = ref("");
     const level = ref(1);
