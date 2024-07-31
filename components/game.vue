@@ -26,12 +26,11 @@
               <div class="text-xl mb-4 flex gap-x-2">
                 <div>
               <div>
-                Melons:
                 <span class="text-green-400">{{ melons.toLocaleString() }}</span>
               </div>
             </div>
                 <div>
-                    (<span class="text-green-400">{{ mps.toLocaleString() }}</span>/sec)
+                    (<span class="text-green-400">{{ mps.toLocaleString() }}</span>/s)
                 </div>
               </div>
               <button
