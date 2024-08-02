@@ -523,7 +523,11 @@
             if (clickhistory.value.length > 25) {
                 clickhistory.value.shift();
             };
-            melons.value++;
+            if (mps.value < 4) {
+                melons.value++;
+            } else {
+                melons.value += Math.floor(mps.value / 2);
+            };
             clicked.value++;
             Engine.anticheat();
             if (!banned.value) {
