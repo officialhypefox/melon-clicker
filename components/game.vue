@@ -135,7 +135,7 @@
             <div>
               Total earned:
               <span class="text-green-400"
-                >{{ (total + clicked).toLocaleString() }}</span
+                >{{ total.toLocaleString() }}</span
               >
             </div>
             <div>
@@ -525,8 +525,11 @@
             };
             if (mps.value < 4) {
                 melons.value++;
+                total.value++;
             } else {
-                melons.value += Math.floor(mps.value / 2);
+                const computed = Math.floor(mps.value / 2);
+                melons.value += computed;
+                total.value += computed;
             };
             clicked.value++;
             Engine.anticheat();
