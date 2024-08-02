@@ -440,8 +440,6 @@
                             switch (output.name) {
                                 case "melons":
                                     const computed = (building.owned * output.value) * settings.general.inflationRate;
-                                    melons.value += computed;
-                                    total.value += computed;
                                     mps.value += computed;
                                     break;
                             };
@@ -449,6 +447,8 @@
                     }
                 };
             };
+            melons.value += mps.value;
+            total.value += mps.value;
             if (mps.value >= Engine.leveling()) {
                 level.value++;
             };
