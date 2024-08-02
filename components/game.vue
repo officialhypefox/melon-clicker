@@ -23,7 +23,7 @@
             <div
               class="lg:w-1/4 flex flex-col items-center justify-center lg:justify-center"
             >
-              <div class="text-xl mb-4 flex gap-x-2">
+              <div class="text-xl mb-4 grid text-center">
                 <div>
               <div>
                 <span class="text-green-400">{{ melons.toLocaleString() }}</span>
