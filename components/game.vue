@@ -67,10 +67,7 @@
                 >
                   <div class="flex justify-between items-center mb-1">
                     <span class="font-medium text-sm">{{ building.name }}</span>
-                    <span class="text-xs text-gray-400"
-                      >{{ Engine.getOwned(building.name) }}/{{ building.limit
-                      }}</span
-                    >
+                    <span class="text-xs text-gray-400">{{ Engine.getOwned(building.name).toLocaleString() }}/{{ building.limit.toLocaleString() }}</span>
                   </div>
                   <div class="text-xs text-gray-400 text-center mb-1">
                     {{ building.description }}
