@@ -543,28 +543,41 @@
             location.reload();
         };
         static anticheat() {
-            if (clickhistory.value.length >= 20) {
-                const firstClickTime = clickhistory.value[0];
-                let sameDelayCount = 0;
-                const expectedDelay = clickhistory.value[1] - firstClickTime;
-                const threshold = 10;
-                for (let i = 2; i < clickhistory.value.length; i++) {
-                    const currentDelay = clickhistory.value[i] - clickhistory.value[i - 1];
-                    if (currentDelay >= expectedDelay - threshold && currentDelay <= expectedDelay + threshold) {
-                        sameDelayCount++;
-                    } else {
-                        sameDelayCount = 0;
+            const minClicks = 50;
+            const maxTimeWindow = 10000;
+            const humanVariability = 0.2;
+            const suspiciousThreshold = 0.8;
+            if (clickhistory.value.length >= minClicks) {
+                const recentClicks = clickhistory.value.slice(-minClicks);
+                const timeWindow = recentClicks[recentClicks.length - 1] - recentClicks[0];
+                if (timeWindow <= maxTimeWindow) {
+                    const intervals = [];
+                    for (let i = 1; i < recentClicks.length; i++) {
+                        intervals.push(recentClicks[i] - recentClicks[i - 1]);
                     };
-                };
-                if (sameDelayCount >= 15) {
-                    toast.add({
-                        title: "Cheating detected!",
-                        description: "You have been detected using an autoclicker and the game has been terminated.",
-                        color: "red",
-                        icon: "i-lucide-alert-circle",
-                        timeout: 5 * 1000
-                    });
-                    banned.value = true;
+                    const avgInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+                    const stdDeviation = Math.sqrt(intervals.reduce((sum, interval) => sum + Math.pow(interval - avgInterval, 2), 0) / intervals.length);
+                    let suspiciousClicks = 0;
+                    for (let i = 0; i < intervals.length; i++) {
+                        const lowerBound = avgInterval * (1 - humanVariability);
+                        const upperBound = avgInterval * (1 + humanVariability);
+                        if (intervals[i] >= lowerBound && intervals[i] <= upperBound) {
+                            suspiciousClicks++;
+                        };
+                    };
+                    const suspiciousRatio = suspiciousClicks / intervals.length;
+                    const tooConsistent = stdDeviation / avgInterval < 0.1;
+                    const tooFast = avgInterval < 50;
+                    if (suspiciousRatio >= suspiciousThreshold || tooConsistent || tooFast) {
+                        toast.add({
+                            title: "Cheating detected!",
+                            description: "Suspicious clicking pattern detected. The game has been terminated.",
+                            color: "red",
+                            icon: "i-lucide-alert-circle",
+                            timeout: 5 * 1000
+                        });
+                        banned.value = true;
+                    };
                 };
             };
         };
