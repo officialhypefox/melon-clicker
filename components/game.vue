@@ -547,7 +547,7 @@
                 const firstClickTime = clickhistory.value[0];
                 let sameDelayCount = 0;
                 const expectedDelay = clickhistory.value[1] - firstClickTime;
-                const threshold = 5;
+                const threshold = 10;
                 for (let i = 2; i < clickhistory.value.length; i++) {
                     const currentDelay = clickhistory.value[i] - clickhistory.value[i - 1];
                     if (currentDelay >= expectedDelay - threshold && currentDelay <= expectedDelay + threshold) {
