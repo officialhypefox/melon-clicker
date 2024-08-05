@@ -10,9 +10,5 @@ export default defineNuxtConfig({
     public: "static",
     pages: "routes"
   },
-  ui: {
-    icons: [
-      "lucide"
-    ]
-  }
+  compatibilityDate: "2024-08-05"
 });

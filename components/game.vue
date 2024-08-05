@@ -1,5 +1,128 @@
 <template>
     <div v-if="!banned && !loading" class="bg-gray-900 min-h-screen flex flex-col text-white">
+      <UModal v-model="creditsMenuOpen">
+        <div class="bg-gray-900 p-6 rounded-lg">
+          <h3 class="text-2xl font-bold text-center mb-4">Melon Clicker: Credits</h3>
+          <div class="grid gap-4">
+            <h4 class="text-xl font-bold">Development Team</h4>
+            <div class="flex justify-between">
+              <span>Game Development Lead:</span>
+              <span class="text-green-400">Emilio Persson</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Game Design Lead:</span>
+              <span class="text-green-400">Emilio Persson</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Published By:</span>
+              <span class="text-green-400">Hypefox Ltd</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Version:</span>
+              <span class="text-green-400">{{ verid }}</span>
+            </div>
+          </div>
+          <div class="grid gap-4 mt-4">
+            <h4 class="text-xl font-bold">Notable Mentions</h4>
+            <div class="grid gap-4">
+              <div class="flex justify-between">
+                <span>Head of Playtesting:</span>
+                <span class="text-green-400">nsoolo</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            &copy; {{ year }}
+            <a
+              href="https://hypefox.net"
+              class="text-orange-400 hover:text-orange-300"
+              >Hypefox Entertainment Software</a
+            >
+          </div>
+          <div class="flex justify-center gap-4 mt-4">
+            <UButton @click="creditsMenuOpen = !creditsMenuOpen; infoModalOpen = !infoModalOpen" icon="i-lucide-menu" label="Menu" color="gray" />
+            <UButton @click="creditsMenuOpen = !creditsMenuOpen" label="Close" trailing-icon="i-lucide-x" color="orange" />
+          </div>
+        </div>
+      </UModal>
+      <UModal v-model="statsMenuOpen">
+        <div class="bg-gray-900 p-6 rounded-lg">
+          <h3 class="text-2xl font-bold text-center mb-4">Melon Clicker: Statistics</h3>
+          <div class="grid gap-4">
+            <div class="flex justify-between">
+              <span>Total melons earned:</span>
+              <span class="text-green-400">{{ total.toLocaleString() }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Reach for next level:</span>
+              <span class="text-green-400 text-sm">{{ Engine.leveling() > 0 ? Engine.leveling().toLocaleString() + '/s' : 'Calculating...' }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Total melons spent:</span>
+              <span class="text-green-400">{{ spent.toLocaleString() }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Total melon clicks:</span>
+              <span class="text-green-400">{{ clicked.toLocaleString() }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Buildings owned:</span>
+              <span class="text-green-400">{{ Engine.buildings(false) }}/{{ Engine.buildings(true, true).toLocaleString() }} ({{ Engine.progress() }}%)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Engine runtime:</span>
+              <span class="text-green-400">{{ runtime }}</span>
+            </div>
+          </div>
+          <div class="flex justify-center gap-4 mt-4">
+            <UButton @click="statsMenuOpen = !statsMenuOpen; infoModalOpen = !infoModalOpen" icon="i-lucide-menu" label="Menu" color="gray" />
+            <UButton @click="statsMenuOpen = !statsMenuOpen" label="Close" trailing-icon="i-lucide-x" color="orange" />
+          </div>
+        </div>
+      </UModal>
+      <UModal v-model="infoModalOpen">
+        <div class="bg-gray-900 p-6 rounded-lg">
+        <h3 class="text-2xl text-center font-bold mb-4">Melon Clicker: Main Menu</h3>
+        <div class="grid justify-center gap-y-4">
+          <div class="flex gap-x-4 justify-center">
+            <UButton
+              @click="infoModalOpen = !infoModalOpen; statsMenuOpen = !statsMenuOpen"
+              label="Statistics"
+              icon="i-lucide-pie-chart"
+              class="justify-center"
+              color="blue"
+              variant="outline"
+            />
+            <UButton
+              @click="infoModalOpen = !infoModalOpen; resetopen = !resetopen"
+              label="Start Over"
+              icon="i-lucide-trash"
+              class="justify-center"
+              color="red"
+              variant="outline"
+            />
+          </div>
+          <div class="flex gap-x-4 justify-center">
+            <UButton
+              @click="infoModalOpen = !infoModalOpen; creditsMenuOpen = !creditsMenuOpen"
+              label="Credits"
+              icon="i-lucide-info"
+              class="justify-center"
+              color="green"
+              variant="outline"
+            />
+            <UButton
+              @click="infoModalOpen = !infoModalOpen"
+              label="Close"
+              trailing-icon="i-lucide-x"
+              class="justify-center"
+              color="orange"
+              variant="outline"
+            />
+          </div>
+          </div>
+        </div>
+      </UModal>
       <header class="bg-gray-800 p-4 sticky top-0 z-10">
         <div class="container mx-auto flex justify-between items-center">
           <div class="text-2xl font-bold">
@@ -152,11 +275,12 @@
               >Hypefox Corporation</a
             >
             <UButton
-              @click="resetopen = true"
-              label="Reset Game"
-              trailing-icon="i-lucide-trash"
+              @click="infoModalOpen = !infoModalOpen"
+              label="Menu"
+              trailing-icon="i-lucide-menu"
               square
-              color="red"
+              color="orange"
+              variant="soft"
               size="xs"
               class="ml-2 mt-1"
             />
@@ -165,15 +289,15 @@
       </footer>
   
       <UModal v-model="resetopen">
-        <div class="bg-gray-800 p-6 rounded-lg">
+        <div class="bg-gray-900 p-6 rounded-lg">
           <h3 class="text-2xl font-bold mb-4">Reset save data?</h3>
           <p class="text-gray-400 mb-6">
             All game progress will be wiped and the game will reload. This cannot
             be undone.
           </p>
           <div class="flex justify-end gap-4">
-            <UButton @click="resetopen = false" label="Cancel" color="gray" />
-            <UButton @click="Engine.clear()" label="Reset" color="red" />
+            <UButton @click="resetopen = !resetopen; infoModalOpen = !infoModalOpen" icon="i-lucide-menu" label="Menu" color="gray" />
+            <UButton @click="Engine.clear()" label="Reset" color="red" trailing-icon="i-lucide-check" />
           </div>
         </div>
       </UModal>
@@ -210,7 +334,10 @@
     const verid = ref("v2-beta04");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
+    const creditsMenuOpen = ref(false);
     const clickhistory = ref(Array());
+    const infoModalOpen = ref(false);
+    const statsMenuOpen = ref(false);
     const runtime = ref("00:00:00");
     const data = app.$data as any;
     const resetopen = ref(false);
