@@ -551,7 +551,7 @@
                     spent: spent.value,
                     tracking: tracking.value,
                     verid: verid.value,
-                    data: data
+                    data: data.value
                 }));
             };
         };
@@ -600,16 +600,16 @@
             if (!import.meta.server) {
                 const game = localStorage.getItem("game");
                 if (game) {
-                    const parsed = ref(JSON.parse(game));
-                    runtime.value = parsed.value.runtime;
-                    clicked.value = parsed.value.clicks;
-                    melons.value = parsed.value.melons;
-                    level.value = parsed.value.level;
-                    total.value = parsed.value.total;
-                    spent.value = parsed.value.spent;
-                    tracking.value = parsed.value.tracking;
-                    data.value.buildings = parsed.value.data.buildings;
-                    if (parsed.value.verid !== verid.value) {
+                    const parsed = JSON.parse(game);
+                    runtime.value = parsed.runtime;
+                    clicked.value = parsed.clicks;
+                    melons.value = parsed.melons;
+                    level.value = parsed.level;
+                    total.value = parsed.total;
+                    spent.value = parsed.spent;
+                    tracking.value = parsed.tracking;
+                    data.value.buildings = parsed.data.buildings;
+                    if (parsed.verid !== verid.value) {
                         toast.add({
                             title: "Game updated!",
                             description: `The game has been updated to version ${verid.value}. Your save data has been migrated, reset if you encounter any issues.`,
