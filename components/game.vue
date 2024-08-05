@@ -184,9 +184,9 @@
                   :key="buildIndex"
                   class="bg-gray-800 p-3 rounded transition-colors duration-200"
                   :class="{
-                        'hover:bg-gray-700': building.owned < building.limit,
-                        '!opacity-50': building.owned >= building.limit
-                    }"
+                    'hover:bg-gray-700': building.owned < building.limit,
+                    '!opacity-50': building.owned >= building.limit
+                  }"
                 >
                   <div class="flex justify-between items-center mb-1">
                     <span class="font-medium text-sm">{{ building.name }}</span>
@@ -335,11 +335,11 @@
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const creditsMenuOpen = ref(false);
+    const data = ref(app.$data as any);
     const clickhistory = ref(Array());
     const infoModalOpen = ref(false);
     const statsMenuOpen = ref(false);
     const runtime = ref("00:00:00");
-    const data = app.$data as any;
     const resetopen = ref(false);
     const shouldTick = ref(true);
     const banned = ref(false);
@@ -393,7 +393,7 @@
         };
     };
     const flattenedBuildings = computed(() => {
-        return data.buildings.categories.flatMap((category: Category) => 
+        return data.value.buildings.categories.flatMap((category: Category) => 
             category.members.map((building: Building) => ({
                 ...building,
                 category: category.name
@@ -409,7 +409,7 @@
             if (percentage) {
                 return ((Engine.buildings() / Engine.buildings(true, true)) * 100).toFixed(2);
             } else {
-                for (const category of data.buildings.categories) {
+                for (const category of data.value.buildings.categories) {
                     for (const building of category.members) {
                         if (building.owned >= building.limit) {
                             result++;
@@ -422,7 +422,7 @@
         static buildings(total = true, all = false) {
             let count = 0;
             if (total) {
-                for (const category of data.buildings.categories) {
+                for (const category of data.value.buildings.categories) {
                     for (const building of category.members) {
                         if (all) {
                             count += building.limit;
@@ -432,7 +432,7 @@
                     };
                 };
             } else {
-                for (const category of data.buildings.categories) {
+                for (const category of data.value.buildings.categories) {
                     count += category.members.length;
                 };
             };
@@ -442,7 +442,7 @@
             return settings.leveling.base * (level.value ** 2);
         };
         static getOwned(buildingName: string) {
-            for (const category of data.buildings.categories) {
+            for (const category of data.value.buildings.categories) {
                 for (const building of category.members) {
                     if (building.name === buildingName) {
                         return building.owned;
@@ -452,7 +452,7 @@
             return 0;
         };
         static purchase(categoryName: string, buildingName: string, max: boolean = false, propagate = true) {
-            const category = data.buildings.categories.find((category: Category) => category.name === categoryName);
+            const category = data.value.buildings.categories.find((category: Category) => category.name === categoryName);
             if (!category) return console.error(`Category ${categoryName} not found. Fatal error.`);
             const building = category.members.find((building: Building) => building.name === buildingName);
             if (!building) return console.error(`Building ${buildingName} not found. Fatal error.`);
@@ -558,7 +558,7 @@
             ticks.value++;
             lang.value = ticks.value === 1 ? "tick" : "ticks";
             mps.value = 0;
-            for (const category of data.buildings.categories) {
+            for (const category of data.value.buildings.categories) {
                 for (const building of category.members) {
                     if (building.owned > 0) {
                         for (const output of building.output) {
@@ -604,7 +604,7 @@
                     total.value = parsed.total;
                     spent.value = parsed.spent;
                     tracking.value = parsed.tracking;
-                    data.buildings = parsed.data.buildings;
+                    data.value.buildings = parsed.data.buildings;
                     if (parsed.verid !== verid.value) {
                         toast.add({
                             title: "Game updated!",
