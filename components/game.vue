@@ -55,7 +55,7 @@
             </div>
             <div class="flex justify-between">
               <span>Reach for next level:</span>
-              <span class="text-green-400">{{ Engine.leveling() > 0 ? Engine.leveling().toLocaleString() + '/s' : 'Calculating...' }}</span>
+              <span class="text-green-400">{{ Engine.leveling() - mps > 0 ? Engine.leveling().toLocaleString() + '/s' : 'Calculating...' }}</span>
             </div>
             <div class="flex justify-between">
               <span>Total melons spent:</span>
@@ -331,7 +331,7 @@
 <script setup lang="ts">
     const app = useNuxtApp();
     const loading = ref(true);
-    const verid = ref("v2-beta05");
+    const verid = ref("v2-rc1");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const creditsMenuOpen = ref(false);
@@ -345,7 +345,7 @@
     const banned = ref(false);
     const toast = useToast();
     const clicked = ref(0);
-    const melons = ref(0);
+    const melons = ref(9999999999999999999999999999999);
     const ticks = ref(0);
     const lang = ref("");
     const level = ref(1);
