@@ -55,7 +55,7 @@
             </div>
             <div class="flex justify-between">
               <span>Reach for next level:</span>
-              <span class="text-green-400 text-sm">{{ Engine.leveling() > 0 ? Engine.leveling().toLocaleString() + '/s' : 'Calculating...' }}</span>
+              <span class="text-green-400">{{ Engine.leveling() > 0 ? Engine.leveling().toLocaleString() + '/s' : 'Calculating...' }}</span>
             </div>
             <div class="flex justify-between">
               <span>Total melons spent:</span>
