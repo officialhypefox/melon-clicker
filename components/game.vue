@@ -345,7 +345,7 @@
     const banned = ref(false);
     const toast = useToast();
     const clicked = ref(0);
-    const melons = ref(9999999999999999999999999999999);
+    const melons = ref(0);
     const ticks = ref(0);
     const lang = ref("");
     const level = ref(1);
