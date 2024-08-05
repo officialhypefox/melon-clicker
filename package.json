@@ -20,5 +20,6 @@
   "dependencies": {
     "@iconify-json/lucide": "^1.1.205",
     "@nuxt/ui": "^2.18.3"
-  }
+  },
+  "packageManager": "bun@1.1.21"
 }
