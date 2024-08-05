@@ -539,6 +539,7 @@
         static saveGame() {
             if (!import.meta.server) {
                 localStorage.setItem("game", JSON.stringify({
+                    runtime: runtime.value,
                     melons: melons.value,
                     clicks: clicked.value,
                     level: level.value,
@@ -596,12 +597,14 @@
                 const game = localStorage.getItem("game");
                 if (game) {
                     const parsed = JSON.parse(game);
+                    runtime.value = parsed.runtime;
                     clicked.value = parsed.clicks;
                     melons.value = parsed.melons;
                     level.value = parsed.level;
                     total.value = parsed.total;
                     spent.value = parsed.spent;
                     tracking.value = parsed.tracking;
+                    data.buildings = parsed.data.buildings;
                     if (parsed.verid !== verid.value) {
                         toast.add({
                             title: "Game updated!",
@@ -611,7 +614,6 @@
                             timeout: 5 * 1000
                         });
                     } else {
-                        data.buildings = parsed.data.buildings;
                         toast.add({
                             title: "Game loaded!",
                             description: "Your save data has been successfully loaded.",
@@ -628,14 +630,6 @@
                         icon: "i-lucide-heart",
                         timeout: 5 * 1000
                     });
-                };
-            };
-            lang.value = ticks.value === 1 ? "tick" : "ticks";
-            for (const category of data.buildings.categories) {
-                for (const building of category.members) {
-                    for (const object of building.cost) {
-                        tracking.value[building.name + object.name] = object.base * settings.general.inflationRate;
-                    };
                 };
             };
         };
