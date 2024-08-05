@@ -4,7 +4,7 @@
         <div class="container mx-auto flex justify-between items-center">
           <div class="text-2xl font-bold">
             <a
-              href="https://hypefoxstudios.com"
+              href="https://hypefox.net"
               class="text-orange-400 hover:text-orange-300 mr-2"
               >Hypefox</a
             >
@@ -147,7 +147,7 @@
           <div class="text-center">
             &copy; {{ year }}
             <a
-              href="https://hypefoxstudios.com"
+              href="https://hypefox.net"
               class="text-orange-400 hover:text-orange-300"
               >Hypefox Corporation</a
             >

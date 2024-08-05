@@ -24,4 +24,16 @@
             }
         ]
     });
+    useHead({
+        htmlAttrs: {
+            lang: "en"
+        },
+        link: [
+            {
+                rel: "icon",
+                type: "image/svg+xml",
+                href: "https://cdn.hypefox.net/data/melon/img/icon.svg"
+            }
+        ]
+    });
 </script>
