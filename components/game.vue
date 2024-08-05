@@ -331,7 +331,7 @@
 <script setup lang="ts">
     const app = useNuxtApp();
     const loading = ref(true);
-    const verid = ref("v2-beta04");
+    const verid = ref("v2-beta05");
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
     const creditsMenuOpen = ref(false);
