@@ -26,8 +26,12 @@
             <h4 class="text-xl font-bold">Notable Mentions</h4>
             <div class="grid gap-4">
               <div class="flex justify-between">
-                <span>Head of Playtesting:</span>
+                <span>Head Playtester:</span>
                 <span class="text-green-400">nsoolo</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Beta Tester:</span>
+                <span class="text-green-400">Cirrus</span>
               </div>
             </div>
           </div>
