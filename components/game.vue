@@ -1,7 +1,7 @@
 <template>
     <div v-if="!banned && !loading" class="bg-gray-900 min-h-screen flex flex-col text-white">
       <UModal v-model="creditsMenuOpen">
-        <div class="bg-gray-900 p-6 rounded-lg">
+        <div class="bg-gray-900 p-6 rounded-lg text-white">
           <h3 class="text-2xl font-bold text-center mb-4">Melon Clicker: Credits</h3>
           <div class="grid gap-4">
             <h4 class="text-xl font-bold">Development Team</h4>
@@ -46,7 +46,7 @@
         </div>
       </UModal>
       <UModal v-model="statsMenuOpen">
-        <div class="bg-gray-900 p-6 rounded-lg">
+        <div class="bg-gray-900 p-6 rounded-lg text-white">
           <h3 class="text-2xl font-bold text-center mb-4">Melon Clicker: Statistics</h3>
           <div class="grid gap-4">
             <div class="flex justify-between">
@@ -67,7 +67,7 @@
             </div>
             <div class="flex justify-between">
               <span>Buildings owned:</span>
-              <span class="text-green-400">{{ Engine.buildings(false) }}/{{ Engine.buildings(true, true).toLocaleString() }} ({{ Engine.progress() }}%)</span>
+              <span class="text-green-400">{{ Engine.buildings() }}/{{ Engine.buildings(true, true).toLocaleString() }} ({{ Engine.progress() }}%)</span>
             </div>
             <div class="flex justify-between">
               <span>Engine runtime:</span>
@@ -81,7 +81,7 @@
         </div>
       </UModal>
       <UModal v-model="infoModalOpen">
-        <div class="bg-gray-900 p-6 rounded-lg">
+        <div class="bg-gray-900 p-6 rounded-lg text-white">
         <h3 class="text-2xl text-center font-bold mb-4">Melon Clicker: Main Menu</h3>
         <div class="grid justify-center gap-y-4">
           <div class="flex gap-x-4 justify-center">
@@ -289,7 +289,7 @@
       </footer>
   
       <UModal v-model="resetopen">
-        <div class="bg-gray-900 p-6 rounded-lg">
+        <div class="bg-gray-900 p-6 rounded-lg text-white">
           <h3 class="text-2xl font-bold mb-4">Reset save data?</h3>
           <p class="text-gray-400 mb-6">
             All game progress will be wiped and the game will reload. This cannot
