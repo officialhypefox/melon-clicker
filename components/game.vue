@@ -388,7 +388,7 @@
     const tracking = ref({} as Tracking);
     const melonImage = ref(null as any);
     const handleMelonClick = () => {
-        Engine.handleClick()
+        Engine.handleClick();
         if (melonImage.value) {
             melonImage.value.style.transform = "scale(0.75)";
             setTimeout(() => {
