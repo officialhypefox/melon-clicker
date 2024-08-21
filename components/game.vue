@@ -671,7 +671,7 @@
             const minClicks = 50;
             const maxTimeWindow = 10000;
             const humanVariability = 0.2;
-            const suspiciousThreshold = 0.8;
+            const suspiciousThreshold = 0.3;
             if (clickhistory.value.length >= minClicks) {
                 const recentClicks = clickhistory.value.slice(-minClicks);
                 const timeWindow = recentClicks[recentClicks.length - 1] - recentClicks[0];
