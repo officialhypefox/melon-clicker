@@ -668,10 +668,10 @@
             location.reload();
         };
         static anticheat() {
-            const minClicks = 50;
+            const minClicks = 25;
             const maxTimeWindow = 10000;
-            const humanVariability = 0.2;
-            const suspiciousThreshold = 0.3;
+            const humanVariability = 0.1;
+            const suspiciousThreshold = 0.15;
             if (clickhistory.value.length >= minClicks) {
                 const recentClicks = clickhistory.value.slice(-minClicks);
                 const timeWindow = recentClicks[recentClicks.length - 1] - recentClicks[0];
