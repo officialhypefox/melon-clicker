@@ -642,7 +642,7 @@
         };
         static handleClick() {
             clickhistory.value.push(Date.now());
-            if (clickhistory.value.length > 25) {
+            if (clickhistory.value.length > 50) {
                 clickhistory.value.shift();
             };
             if (mps.value < 4) {
@@ -668,10 +668,10 @@
             location.reload();
         };
         static anticheat() {
-            const minClicks = 25;
-            const maxTimeWindow = 10000;
+            const minClicks = 50;
+            const maxTimeWindow = 5000;
             const humanVariability = 0.1;
-            const suspiciousThreshold = 0.15;
+            const suspiciousThreshold = 0.1;
             if (clickhistory.value.length >= minClicks) {
                 const recentClicks = clickhistory.value.slice(-minClicks);
                 const timeWindow = recentClicks[recentClicks.length - 1] - recentClicks[0];
