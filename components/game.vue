@@ -530,8 +530,9 @@
                 for (const cost of building.cost) {
                     switch (cost.name) {
                         case "melons":
-                            melons.value -= Engine.price(cost.base, building.owned);
-                            spent.value += Engine.price(cost.base, building.owned);
+                            const computed = Engine.price(cost.base, building.owned);
+                            melons.value -= computed;
+                            spent.value += computed;
                             break;
                     };
                 };
@@ -556,44 +557,32 @@
             };
         };
         static tick() {
-            if (banned.value || !shouldTick.value) {
-                return;
-            };
+            if (banned.value || !shouldTick.value) return;
             ticks.value++;
             lang.value = ticks.value === 1 ? "tick" : "ticks";
-            mps.value = 0;
+            let newMps = 0;
             for (const category of data.value.buildings.categories) {
                 for (const building of category.members) {
                     if (building.owned > 0) {
                         for (const output of building.output) {
-                            switch (output.name) {
-                                case "melons":
-                                    const computed = (building.owned * output.value) * settings.general.inflationRate;
-                                    mps.value += computed;
-                                    break;
+                            if (output.name === "melons") {
+                                newMps += building.owned * output.value;
+                                break;
                             };
                         };
-                    }
+                    };
                 };
             };
-            melons.value += mps.value;
-            total.value += mps.value;
-            if (mps.value >= Engine.leveling()) {
-                level.value++;
-            };
-            let seconds = parseInt(runtime.value.split(":")[2]);
-            let minutes = parseInt(runtime.value.split(":")[1]);
-            let hours = parseInt(runtime.value.split(":")[0]);
-            seconds++;
-            if (seconds >= 60) {
-                seconds = 0;
-                minutes++;
-            };
-            if (minutes >= 60) {
-                minutes = 0;
-                hours++;
-            };
-            runtime.value = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+            newMps *= settings.general.inflationRate;
+            mps.value = newMps;
+            const melonGain = newMps;
+            melons.value += melonGain;
+            total.value += melonGain;
+            if (newMps >= Engine.leveling()) level.value++;
+            const [hours, minutes, seconds] = runtime.value.split(':').map(Number);
+            const date = new Date(0);
+            date.setUTCHours(hours, minutes, seconds + 1);
+            runtime.value = date.toISOString().substr(11, 8);
             Engine.saveGame();
         };
         static init() {
