@@ -415,7 +415,7 @@
             return count;
         };
         static leveling() {
-            return settings.leveling.base * (level.value ** 2);
+            return settings.leveling.base * (level.value ** 3);
         };
         static getOwned(buildingName: string) {
             for (const category of data.value.buildings.categories) {
