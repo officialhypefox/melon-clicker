@@ -618,6 +618,7 @@
             if (!import.meta.server) localStorage.removeItem("game");
             location.reload();
         };
+    };
     onMounted(() => {
         setTimeout(() => {
             Engine.init();
