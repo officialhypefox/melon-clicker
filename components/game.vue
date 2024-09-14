@@ -75,7 +75,7 @@
             </div>
             <div class="flex justify-between">
               <span>Engine runtime:</span>
-              <span class="text-green-400">{{ (Math.floor(runtimeSeconds / 86400) + ":" + (new Date(runtimeSeconds * 1000)).toISOString().substr(11, 8)).split(":") }}</span>
+              <span class="text-green-400">{{ (Math.floor(runtimeSeconds / 86400) + ":" + (new Date(runtimeSeconds * 1000)).toISOString().substr(11, 8)) }}</span>
             </div>
           </div>
           <div class="flex justify-center gap-4 mt-4">
@@ -550,7 +550,7 @@
             melons.value += computed;
             total.value += computed;
             if (computed >= Engine.leveling()) level.value++;
-            runtimeSeconds++;
+            runtimeSeconds.value++;
             Engine.saveGame();
         };
         static init() {
