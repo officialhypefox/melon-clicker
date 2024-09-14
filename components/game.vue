@@ -602,9 +602,8 @@
                 melons.value++;
                 total.value++;
             } else {
-                const computed = Math.floor(mps.value / 2);
-                melons.value += computed;
-                total.value += computed;
+                melons.value += mps.value;
+                total.value += mps.value;
             };
             clicked.value++;
         };
