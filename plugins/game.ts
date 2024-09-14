@@ -7,6 +7,9 @@ const settings = {
     },
     tick: {
         interval: 1
+    },
+    misc: {
+        version: "v2-rc2"
     }
 };
 const data = {
