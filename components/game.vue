@@ -19,7 +19,7 @@
             </div>
             <div class="flex justify-between">
               <span>Version:</span>
-              <span class="text-green-400">{{ verid }}</span>
+              <span class="text-green-400">{{ settings.misc.version }}</span>
             </div>
           </div>
           <div class="grid gap-4 mt-4">
@@ -75,7 +75,7 @@
             </div>
             <div class="flex justify-between">
               <span>Engine runtime:</span>
-              <span class="text-green-400">{{ runtime }}</span>
+              <span class="text-green-400">{{ (Math.floor(runtimeSeconds / 86400) + ":" + (new Date(runtimeSeconds * 1000)).toISOString().substr(11, 8)).split(":") }}</span>
             </div>
           </div>
           <div class="flex justify-center gap-4 mt-4">
@@ -135,7 +135,7 @@
               class="text-orange-400 hover:text-orange-300 mr-2"
               >Hypefox</a
             >
-            <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span> <span class="text-gray-400">{{ verid }}</span>
+            <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span> <span class="text-gray-400">{{ settings.misc.version }}</span>
           </div>
           <div class="text-xl">
             Level: <span class="text-green-400">{{ level.toLocaleString() }}</span>
@@ -309,26 +309,25 @@
 </template>
 <script setup lang="ts">
     const app = useNuxtApp();
-    const loading = ref(true);
-    const verid = ref("v2-rc1");
+    const creditsMenuOpen = ref(Boolean());
     const settings = app.$settings as any;
     const year = new Date().getFullYear();
-    const creditsMenuOpen = ref(false);
+    const runtimeSeconds = ref(Number());
+    const infoModalOpen = ref(Boolean());
+    const statsMenuOpen = ref(Boolean());
     const data = ref(app.$data as any);
-    const infoModalOpen = ref(false);
-    const statsMenuOpen = ref(false);
-    const runtime = ref("00:00:00");
-    const resetopen = ref(false);
-    const shouldTick = ref(true);
+    const shouldTick = ref(Boolean(1));
+    const resetopen = ref(Boolean());
+    const loading = ref(Boolean(1));
+    const level = ref(Number(true));
+    const clicked = ref(Number());
+    const melons = ref(Number());
+    const total = ref(Number());
+    const spent = ref(Number());
+    const ticks = ref(Number());
+    const lang = ref(String());
+    const mps = ref(Number());
     const toast = useToast();
-    const clicked = ref(0);
-    const melons = ref(0);
-    const ticks = ref(0);
-    const lang = ref("");
-    const level = ref(1);
-    const total = ref(0);
-    const spent = ref(0);
-    const mps = ref(0);
     interface Tracking {
         [key: string]: number;
     };
@@ -517,14 +516,14 @@
         static saveGame() {
             if (!import.meta.server) {
                 localStorage.setItem("game", JSON.stringify({
-                    runtime: runtime.value,
+                    runtime: runtimeSeconds.value,
                     melons: melons.value,
                     clicks: clicked.value,
                     level: level.value,
                     total: total.value,
                     spent: spent.value,
                     tracking: tracking.value,
-                    verid: verid.value,
+                    verid: settings.misc.version,
                     data: data.value
                 }));
             };
@@ -551,10 +550,7 @@
             melons.value += computed;
             total.value += computed;
             if (computed >= Engine.leveling()) level.value++;
-            const [hours, minutes, seconds] = runtime.value.split(':').map(Number);
-            const date = new Date(0);
-            date.setUTCHours(hours, minutes, seconds + 1);
-            runtime.value = date.toISOString().substr(11, 8);
+            runtimeSeconds++;
             Engine.saveGame();
         };
         static init() {
@@ -562,7 +558,7 @@
                 const game = localStorage.getItem("game");
                 if (game) {
                     const parsed = JSON.parse(game);
-                    runtime.value = parsed.runtime;
+                    runtimeSeconds.value = parsed.runtime;
                     clicked.value = parsed.clicks;
                     melons.value = parsed.melons;
                     level.value = parsed.level;
@@ -570,10 +566,10 @@
                     spent.value = parsed.spent;
                     tracking.value = parsed.tracking;
                     data.value.buildings = parsed.data.buildings;
-                    if (parsed.verid !== verid.value) {
+                    if (parsed.verid !== settings.misc.version) {
                         toast.add({
                             title: "Game updated!",
-                            description: `The game has been updated to version ${verid.value}. Your save data has been migrated, reset if you encounter any issues.`,
+                            description: `The game has been updated to version ${settings.misc.version}. Your save data has been migrated, reset if you encounter any issues.`,
                             color: "blue",
                             icon: "i-lucide-rocket",
                             timeout: 5 * 1000
