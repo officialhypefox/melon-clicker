@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!banned && !loading" class="bg-gray-900 min-h-screen flex flex-col text-white">
+    <div v-if="!loading" class="bg-gray-900 min-h-screen flex flex-col text-white">
       <UModal v-model="creditsMenuOpen">
         <div class="bg-gray-900 p-6 rounded-lg text-white">
           <h3 class="text-2xl font-bold text-center mb-4">Melon Clicker: Credits</h3>
@@ -172,7 +172,6 @@
                 />
               </button>
             </div>
-  
             <div class="lg:w-3/4 flex flex-col">
               <h2 class="text-2xl font-bold mb-4">
                 Real Estate Broker (<span class="text-green-400"
@@ -252,7 +251,6 @@
           </div>
         </div>
       </main>
-  
       <footer class="bg-gray-800 p-3 mt-auto">
         <div class="container mx-auto text-sm text-gray-400">
           <div class="flex justify-center gap-x-2">
@@ -291,7 +289,6 @@
           </div>
         </div>
       </footer>
-  
       <UModal v-model="resetopen">
         <div class="bg-gray-900 p-6 rounded-lg text-white">
           <h3 class="text-2xl font-bold mb-4">Reset save data?</h3>
@@ -306,30 +303,8 @@
         </div>
       </UModal>
     </div>
-  
     <div v-else-if="loading" class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
       <UIcon name="i-lucide-loader" class="text-green-500 text-6xl md:text-8xl animate-spin" />
-    </div>
-    <div
-      v-if="banned"
-      class="min-h-screen flex items-center justify-center p-4 bg-gray-900"
-    >
-      <div class="text-center">
-        <UIcon
-          name="i-lucide-alert-triangle"
-          class="text-red-500 text-6xl md:text-8xl mb-4"
-        />
-        <h2 class="text-red-500 text-3xl md:text-4xl font-bold mb-4">
-          Cheating Detected!
-        </h2>
-        <p class="text-gray-400 text-lg mb-4">
-          Looks like you've been caught red-handed! Remember, in the game of life,
-          cheats never prosper.
-        </p>
-        <p class="text-red-400 text-xl font-bold">
-          Save data has been destroyed.
-        </p>
-      </div>
     </div>
 </template>
 <script setup lang="ts">
@@ -340,13 +315,11 @@
     const year = new Date().getFullYear();
     const creditsMenuOpen = ref(false);
     const data = ref(app.$data as any);
-    const clickhistory = ref(Array());
     const infoModalOpen = ref(false);
     const statsMenuOpen = ref(false);
     const runtime = ref("00:00:00");
     const resetopen = ref(false);
     const shouldTick = ref(true);
-    const banned = ref(false);
     const toast = useToast();
     const clicked = ref(0);
     const melons = ref(0);
@@ -557,28 +530,27 @@
             };
         };
         static tick() {
-            if (banned.value || !shouldTick.value) return;
+            if (!shouldTick.value) return;
             ticks.value++;
             lang.value = ticks.value === 1 ? "tick" : "ticks";
-            let newMps = 0;
+            let computed = 0;
             for (const category of data.value.buildings.categories) {
                 for (const building of category.members) {
                     if (building.owned > 0) {
                         for (const output of building.output) {
                             if (output.name === "melons") {
-                                newMps += building.owned * output.value;
+                                computed += building.owned * output.value;
                                 break;
                             };
                         };
                     };
                 };
             };
-            newMps *= settings.general.inflationRate;
-            mps.value = newMps;
-            const melonGain = newMps;
-            melons.value += melonGain;
-            total.value += melonGain;
-            if (newMps >= Engine.leveling()) level.value++;
+            computed *= settings.general.inflationRate;
+            mps.value = computed;
+            melons.value += computed;
+            total.value += computed;
+            if (computed >= Engine.leveling()) level.value++;
             const [hours, minutes, seconds] = runtime.value.split(':').map(Number);
             const date = new Date(0);
             date.setUTCHours(hours, minutes, seconds + 1);
@@ -630,10 +602,6 @@
             return input.charAt(0).toUpperCase() + input.slice(1);
         };
         static handleClick() {
-            clickhistory.value.push(Date.now());
-            if (clickhistory.value.length > 25) {
-                clickhistory.value.shift();
-            };
             if (mps.value < 4) {
                 melons.value++;
                 total.value++;
@@ -643,10 +611,6 @@
                 total.value += computed;
             };
             clicked.value++;
-            Engine.anticheat();
-            if (banned.value) {
-                if (!import.meta.server) localStorage.removeItem("game");
-            };
         };
         static clear() {
             shouldTick.value = false;
@@ -654,33 +618,6 @@
             if (!import.meta.server) localStorage.removeItem("game");
             location.reload();
         };
-        static anticheat() {
-            if (clickhistory.value.length >= 20) {
-                const firstClickTime = clickhistory.value[0];
-                let sameDelayCount = 0;
-                const expectedDelay = clickhistory.value[1] - firstClickTime;
-                const threshold = 10;
-                for (let i = 2; i < clickhistory.value.length; i++) {
-                    const currentDelay = clickhistory.value[i] - clickhistory.value[i - 1];
-                    if (currentDelay >= expectedDelay - threshold && currentDelay <= expectedDelay + threshold) {
-                        sameDelayCount++;
-                    } else {
-                        sameDelayCount = 0;
-                    };
-                };
-                if (sameDelayCount >= 15) {
-                    toast.add({
-                        title: "Cheating detected!",
-                        description: "Suspicious clicking activity detected. The game has been terminated.",
-                        color: "red",
-                        icon: "i-lucide-alert-circle",
-                        timeout: 5 * 1000
-                    });
-                    banned.value = true;
-                };
-            };
-        };
-    };
     onMounted(() => {
         setTimeout(() => {
             Engine.init();
