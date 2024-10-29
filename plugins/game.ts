@@ -9,7 +9,7 @@ const settings = {
         interval: 1
     },
     misc: {
-        version: "v2-rc2"
+        version: "v2-stable1"
     }
 };
 const data = {

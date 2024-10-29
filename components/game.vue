@@ -130,12 +130,7 @@
       <header class="bg-gray-800 p-4 sticky top-0 z-10">
         <div class="container mx-auto flex justify-between items-center">
           <div class="text-2xl font-bold">
-            <a
-              href="https://hypefox.net"
-              class="text-orange-400 hover:text-orange-300 mr-2"
-              >Hypefox</a
-            >
-            <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span> <span class="text-gray-400">{{ settings.misc.version }}</span>
+            <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span>
           </div>
           <div class="text-xl">
             Level: <span class="text-green-400">{{ level.toLocaleString() }}</span>
@@ -148,7 +143,7 @@
         >
           <div class="flex flex-col lg:flex-row lg:items-center gap-8">
             <div
-              class="lg:w-1/4 flex flex-col items-center justify-center lg:justify-center"
+              class="flex flex-col items-center justify-center lg:justify-center"
             >
               <div class="text-xl mb-4 grid text-center">
                 <div>
@@ -173,11 +168,8 @@
               </button>
             </div>
             <div class="lg:w-3/4 flex flex-col">
-              <h2 class="text-2xl font-bold mb-4">
-                Real Estate Broker (<span class="text-green-400"
-                  >{{ data.buildings.categories[0].members.length }}</span
-                >
-                available)
+              <h2 class="text-2xl text-center font-bold mb-4">
+                Real Estate Broker (<span class="text-green-400">{{ data.buildings.categories[0].members.length }}</span>)
               </h2>
               <div
                 class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
