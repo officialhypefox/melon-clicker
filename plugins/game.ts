@@ -57,7 +57,7 @@ const data = {
                 },
                 {
                     name: "Melon Patch",
-                    description: "A lush patch filled with bountiful melon plants.",
+                    description: "A nice and lush patch filled with beautiful bountiful melon plants.",
                     owned: 0,
                     limit: 500,
                     cost: [{
