@@ -530,8 +530,8 @@
                         const melonOutput = building.output.find(output => output.name === "melons");
                         if (melonOutput) {
                             categorySum += building.owned * melonOutput.value;
-                        }
-                    }
+                        };
+                    };
                     return categorySum;
                 }, 0);
             }, 0);
