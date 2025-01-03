@@ -524,19 +524,17 @@
             if (!shouldTick.value) return;
             ticks.value++;
             lang.value = ticks.value === 1 ? "tick" : "ticks";
-            let computed = 0;
-            for (const category of data.value.buildings.categories) {
-                for (const building of category.members) {
+            let computed = data.value.buildings.categories.reduce((sum, category) => {
+                return sum + category.members.reduce((categorySum, building) => {
                     if (building.owned > 0) {
-                        for (const output of building.output) {
-                            if (output.name === "melons") {
-                                computed += building.owned * output.value;
-                                break;
-                            };
-                        };
-                    };
-                };
-            };
+                        const melonOutput = building.output.find(output => output.name === "melons");
+                        if (melonOutput) {
+                            categorySum += building.owned * melonOutput.value;
+                        }
+                    }
+                    return categorySum;
+                }, 0);
+            }, 0);
             computed *= settings.general.inflationRate;
             mps.value = computed;
             melons.value += computed;
