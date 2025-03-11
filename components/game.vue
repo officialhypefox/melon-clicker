@@ -228,7 +228,7 @@
                   />
                     <UButton
                         @click="Engine.purchase(building.category, building.name, true)"
-                        :label="`Buy Max (${Engine.purchase(building.category, building.name, true, false) || 0})`"
+                        :label="`Buy ${Engine.willReachLimit(building) ? 'All' : 'Max'} (${Engine.purchase(building.category, building.name, true, false) || 0})`"
                         color="red"
                         size="sm"
                         variant="outline"
@@ -320,6 +320,9 @@
     const lang = ref(String());
     const mps = ref(Number());
     const toast = useToast();
+    const precomputedMPS = ref(Number());
+    const lastTickTime = ref(Date.now());
+    const accumulatedAmount = ref(Number());
     interface Tracking {
         [key: string]: number;
     };
@@ -370,13 +373,13 @@
     });
     class Engine {
         static price(basePrice: number, ownedCount: number, quantity: number = 1): number {
-            return basePrice * (1 + ownedCount * quantity) * settings.general.inflationRate;
+            return Math.floor(basePrice * (1 + ownedCount * quantity) * settings.general.inflationRate);
         };
         static progress(percentage: boolean = true) {
-            let result = 0;
             if (percentage) {
                 return ((Engine.buildings() / Engine.buildings(true, true)) * 100).toFixed(2);
             } else {
+                let result = 0;
                 for (const category of data.value.buildings.categories) {
                     for (const building of category.members) {
                         if (building.owned >= building.limit) {
@@ -418,6 +421,10 @@
                 };
             };
             return 0;
+        };
+        static willReachLimit(building: any): boolean {
+            const maxBuys = Engine.purchase(building.category, building.name, true, false);
+            return building.owned + maxBuys >= building.limit;
         };
         static purchase(categoryName: string, buildingName: string, max: boolean = false, propagate = true) {
             const category = data.value.buildings.categories.find((category: Category) => category.name === categoryName);
@@ -473,6 +480,7 @@
                 };
                 building.owned += maxAfforded;
                 tracking.value[building.name + "melons"] = Engine.price(building.cost[0].base, building.owned);
+                Engine.recalculateMPS();
                 return true;
             } else {
                 let canAfford = true;
@@ -502,6 +510,7 @@
                 };
                 building.owned++;
                 tracking.value[building.name + "melons"] = Engine.price(building.cost[0].base, building.owned);
+                Engine.recalculateMPS();
                 return true;
             };
         };
@@ -520,10 +529,7 @@
                 }));
             };
         };
-        static tick() {
-            if (!shouldTick.value) return;
-            ticks.value++;
-            lang.value = ticks.value === 1 ? "tick" : "ticks";
+        static recalculateMPS() {
             let computed = data.value.buildings.categories.reduce((sum, category) => {
                 return sum + category.members.reduce((categorySum, building) => {
                     if (building.owned > 0) {
@@ -536,12 +542,22 @@
                 }, 0);
             }, 0);
             computed *= settings.general.inflationRate;
+            precomputedMPS.value = computed;
             mps.value = computed;
-            melons.value += computed;
-            total.value += computed;
-            if (computed >= Engine.leveling()) level.value++;
+        };
+        static tick() {
+            if (!shouldTick.value) return;
+            const now = Date.now();
+            const timeDiff = (now - lastTickTime.value) / 1000;
+            lastTickTime.value = now;
+            ticks.value++;
+            lang.value = ticks.value === 1 ? "tick" : "ticks";
+            accumulatedAmount.value += precomputedMPS.value;
+            melons.value += precomputedMPS.value;
+            total.value += precomputedMPS.value;
+            if (precomputedMPS.value >= Engine.leveling()) level.value++;
             runtimeSeconds.value++;
-            Engine.saveGame();
+            requestAnimationFrame(() => Engine.saveGame());
         };
         static init() {
             if (!import.meta.server) {
@@ -582,6 +598,7 @@
                         timeout: 5 * 1000
                     });
                 };
+                Engine.recalculateMPS();
             };
         };
         static title(input: string) {
@@ -608,10 +625,20 @@
         setTimeout(() => {
             Engine.init();
             loading.value = false;
+            lastTickTime.value = Date.now();
         }, 1000);
         setInterval(() => {
             Engine.tick();
         }, settings.tick.interval * 1000);
+        requestAnimationFrame(function frameLoop() {
+            const now = Date.now();
+            const timeSinceLastTick = (now - lastTickTime.value) / 1000;
+            if (timeSinceLastTick < 1 && precomputedMPS.value > 0) {
+                const partialEarnings = precomputedMPS.value * timeSinceLastTick;
+                accumulatedAmount.value = partialEarnings;
+            };
+            requestAnimationFrame(frameLoop);
+        });
     });
     console.info("[✅] Engine is running.");
 </script>
