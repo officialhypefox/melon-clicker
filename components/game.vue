@@ -132,6 +132,10 @@
           <div class="text-2xl font-bold">
             <span class="text-red-500">Melon</span> <span class="text-green-500">Clicker</span>
           </div>
+          <div v-if="ticksBehind > 0" class="text-orange-400 flex items-center">
+            <UIcon name="i-lucide-triangle-alert" class="mr-1" />
+            <span>Couldn't keep up! Running ({{ ticksBehind }}) ticks behind.</span>
+          </div>
           <div class="text-xl">
             Level: <span class="text-green-400">{{ level.toLocaleString() }}</span>
           </div>
@@ -323,6 +327,9 @@
     const precomputedMPS = ref(Number());
     const lastTickTime = ref(Date.now());
     const accumulatedAmount = ref(Number());
+    const expectedTickInterval = ref(Number());
+    const ticksBehind = ref(Number(0));
+    const ticksChecked = ref(Number(0));
     interface Tracking {
         [key: string]: number;
     };
@@ -550,6 +557,18 @@
             const now = Date.now();
             const timeDiff = (now - lastTickTime.value) / 1000;
             lastTickTime.value = now;
+            ticksChecked.value++;
+            if (ticksChecked.value > 10) {
+                const expectedElapsedTime = ticksChecked.value * settings.tick.interval;
+                const actualElapsedTime = runtimeSeconds.value;
+                const tickDifference = Math.floor((expectedElapsedTime - actualElapsedTime) / settings.tick.interval);
+                ticksBehind.value = tickDifference > 1 ? tickDifference : 0;
+                if (ticksBehind.value === 0 && tickDifference <= 1) {
+                    setTimeout(() => {
+                        ticksBehind.value = 0;
+                    }, 5000);
+                };
+            };
             ticks.value++;
             lang.value = ticks.value === 1 ? "tick" : "ticks";
             accumulatedAmount.value += precomputedMPS.value;
@@ -599,6 +618,7 @@
                     });
                 };
                 Engine.recalculateMPS();
+                expectedTickInterval.value = settings.tick.interval;
             };
         };
         static title(input: string) {
@@ -636,7 +656,7 @@
             if (timeSinceLastTick < 1 && precomputedMPS.value > 0) {
                 const partialEarnings = precomputedMPS.value * timeSinceLastTick;
                 accumulatedAmount.value = partialEarnings;
-            };
+            }
             requestAnimationFrame(frameLoop);
         });
     });
