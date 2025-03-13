@@ -134,7 +134,7 @@
           </div>
           <div v-if="ticksBehind > 0" class="text-orange-400 flex items-center">
             <UIcon name="i-lucide-triangle-alert" class="mr-1" />
-            <span>Couldn't keep up! Running ({{ ticksBehind }}) ticks behind.</span>
+            <span>Couldn't keep up! Running {{ ticksBehind }} ticks behind.</span>
           </div>
           <div class="text-xl">
             Level: <span class="text-green-400">{{ level.toLocaleString() }}</span>
@@ -149,16 +149,14 @@
             <div
               class="flex flex-col items-center justify-center lg:justify-center"
             >
-              <div class="text-xl mb-4 grid text-center">
-                <div>
-              <div>
-                <span class="text-green-400">{{ melons.toLocaleString() }}</span>
-              </div>
-            </div>
-                <div>
-                    (<span class="text-green-400">{{ mps.toLocaleString() }}</span>/s)
+                <div class="text-xl mb-4 grid text-center">
+                  <div>
+                    <p>
+                      <a class="text-green-400">{{ melons.toLocaleString() }}</a>
+                      (<a class="text-green-400">{{ mps.toLocaleString() }}</a>/s)
+                    </p>
+                  </div>
                 </div>
-              </div>
               <button
                 @click="handleMelonClick"
                 class="focus:outline-none relative group flex items-center justify-center"
@@ -321,7 +319,6 @@
     const total = ref(Number());
     const spent = ref(Number());
     const ticks = ref(Number());
-    const lang = ref(String());
     const mps = ref(Number());
     const toast = useToast();
     const precomputedMPS = ref(Number());
@@ -537,10 +534,10 @@
             };
         };
         static recalculateMPS() {
-            let computed = data.value.buildings.categories.reduce((sum, category) => {
-                return sum + category.members.reduce((categorySum, building) => {
+            let computed = data.value.buildings.categories.reduce((sum: number, category: Category) => {
+                return sum + category.members.reduce((categorySum: number, building: Building) => {
                     if (building.owned > 0) {
-                        const melonOutput = building.output.find(output => output.name === "melons");
+                        const melonOutput = building.output.find((output: Output) => output.name === "melons");
                         if (melonOutput) {
                             categorySum += building.owned * melonOutput.value;
                         };
@@ -553,30 +550,33 @@
             mps.value = computed;
         };
         static tick() {
-            if (!shouldTick.value) return;
-            const now = Date.now();
-            const timeDiff = (now - lastTickTime.value) / 1000;
-            lastTickTime.value = now;
-            ticksChecked.value++;
-            if (ticksChecked.value > 10) {
-                const expectedElapsedTime = ticksChecked.value * settings.tick.interval;
-                const actualElapsedTime = runtimeSeconds.value;
-                const tickDifference = Math.floor((expectedElapsedTime - actualElapsedTime) / settings.tick.interval);
-                ticksBehind.value = tickDifference > 1 ? tickDifference : 0;
-                if (ticksBehind.value === 0 && tickDifference <= 1) {
-                    setTimeout(() => {
-                        ticksBehind.value = 0;
-                    }, 5000);
-                };
-            };
-            ticks.value++;
-            lang.value = ticks.value === 1 ? "tick" : "ticks";
-            accumulatedAmount.value += precomputedMPS.value;
-            melons.value += precomputedMPS.value;
-            total.value += precomputedMPS.value;
-            if (precomputedMPS.value >= Engine.leveling()) level.value++;
-            runtimeSeconds.value++;
-            requestAnimationFrame(() => Engine.saveGame());
+          if (!shouldTick.value) return;
+          const now = Date.now();
+          lastTickTime.value = now;
+          ticksChecked.value++;
+          if (ticksChecked.value > 10) {
+              const expectedElapsedTime = ticksChecked.value * settings.tick.interval;
+              const actualElapsedTime = runtimeSeconds.value;
+              const tickDifference = Math.floor((expectedElapsedTime - actualElapsedTime) / settings.tick.interval);
+              ticksBehind.value = tickDifference > 1 ? tickDifference : 0;
+              if (ticksBehind.value === 0 && tickDifference <= 1) {
+                  setTimeout(() => {
+                      ticksBehind.value = 0;
+                  }, 5000);
+              };
+          };
+          ticks.value++;
+          accumulatedAmount.value += precomputedMPS.value;
+          melons.value += precomputedMPS.value;
+          total.value += precomputedMPS.value;
+          let levelsToAdd = 0;
+          while (precomputedMPS.value >= Engine.leveling()) {
+            level.value++;
+            levelsToAdd++;
+            if (precomputedMPS.value < Engine.leveling()) break;
+          };
+          runtimeSeconds.value++;
+          requestAnimationFrame(() => Engine.saveGame());
         };
         static init() {
             if (!import.meta.server) {
