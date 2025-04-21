@@ -1,6 +1,7 @@
 # Melon Clicker
 
 The official game for the cloud computing provider Melonslab.
+![image](https://github.com/user-attachments/assets/3a8ef9fa-f2d9-43d8-b7a6-c9dc010e9816)
 
 ## Powered by Nuxt
 
