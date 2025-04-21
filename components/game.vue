@@ -325,8 +325,9 @@
     const lastTickTime = ref(Date.now());
     const accumulatedAmount = ref(Number());
     const expectedTickInterval = ref(Number());
-    const ticksBehind = ref(Number(0));
+    const previousTicksBehind = ref(Number(0));
     const ticksChecked = ref(Number(0));
+    const ticksBehind = ref(Number(0));
     interface Tracking {
         [key: string]: number;
     };
@@ -552,19 +553,24 @@
         static tick() {
           if (!shouldTick.value) return;
           const now = Date.now();
+          const timeSinceLastTick = (now - lastTickTime.value) / 1000;
+          if (timeSinceLastTick > (settings.tick.interval * 1.5)) {
+            ticksBehind.value = Math.floor(timeSinceLastTick / settings.tick.interval); 
+            if (ticksBehind.value > 0 && (previousTicksBehind.value === 0 || ticksBehind.value > previousTicksBehind.value * 1.5)) {
+                toast.add({
+                    title: "Performance Warning",
+                    description: `Game is running ${ticksBehind.value} ticks behind schedule.`,
+                    color: "orange",
+                    icon: "i-lucide-triangle-alert",
+                    timeout: 7000
+                });
+            };
+          } else if (ticksBehind.value > 0 && timeSinceLastTick < settings.tick.interval) {
+              ticksBehind.value = Math.max(0, ticksBehind.value - 1);
+          };
+          previousTicksBehind.value = ticksBehind.value;
           lastTickTime.value = now;
           ticksChecked.value++;
-          if (ticksChecked.value > 10) {
-              const expectedElapsedTime = ticksChecked.value * settings.tick.interval;
-              const actualElapsedTime = runtimeSeconds.value;
-              const tickDifference = Math.floor((expectedElapsedTime - actualElapsedTime) / settings.tick.interval);
-              ticksBehind.value = tickDifference > 1 ? tickDifference : 0;
-              if (ticksBehind.value === 0 && tickDifference <= 1) {
-                  setTimeout(() => {
-                      ticksBehind.value = 0;
-                  }, 5000);
-              };
-          };
           ticks.value++;
           accumulatedAmount.value += precomputedMPS.value;
           melons.value += precomputedMPS.value;
